@@ -40,6 +40,25 @@ def base_change(in_array, in_base, out_base):
         current = current // out_base
     return ([0]*starting_zeros) + new_num_array
 
+def text_to_colors(text, n_colors):
+    #encode the text with compression
+    encoded = encode(text)
+    #takes the bits of the message
+    bits = BitArray(encoded).bin
+    #makes the bits as an array
+    bits_array = list(map(int, bits))    
+    #change the input bits in our "colors-base"
+    colors = base_change(bits_array, 2, n_colors)
+    return colors
+
+def colors_to_text(colors, n_colors):
+    bits_array = base_change(colors, n_colors, 2)    
+    bit_string = ''.join(map(str, bits_array))
+    bits = BitArray('0b' + bit_string)
+    encoded = bits.tobytes()
+    text = decode(encoded)
+    return text
+    
 def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -82,31 +101,22 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
         MOST_DISTANCES.append((N_TONS**i)*(N_TONS-1))
     MOST_DISTANCES.append(N_COLORS-1)
     
-    #encode the text with compression
-    encoded = encode(text)
-    #takes the bits of the message
-    bits = list(map(int, BitArray(encoded).bin))
+    color_message = text_to_colors(text, N_COLORS)
     
-    #change the input bits in our "colors-base"
-    color_base = base_change(bits, 2, N_COLORS)
+    print(colors_to_text(color_message, N_COLORS))
     
     
-    #try to revert to the text
-    test = base_change(color_base, N_COLORS, 2)
-    print(bits == test)
-    
-    #print(decode(test))
         
-    #bits in the last quadrant which will not use the whole screen
-    remaining_bits = len(bits) % BITS_BY_QUADRANT
-    #number of quadrants needed for the text
-    n_quadrants = len(bits) // BITS_BY_QUADRANT + (remaining_bits != 0)
+#     #bits in the last quadrant which will not use the whole screen
+#     remaining_bits = len(bits) % BITS_BY_QUADRANT
+#     #number of quadrants needed for the text
+#     n_quadrants = len(bits) // BITS_BY_QUADRANT + (remaining_bits != 0)
     
-    #fill a matrix where each row is a quadrant
-    quadrants_bits = [[0 for x in range(BITS_BY_QUADRANT)] for y in range(n_quadrants)] 
-    for i in range(len(bits)):
-        if bits[i]:
-            quadrants_bits[i//BITS_BY_QUADRANT][i%BITS_BY_QUADRANT] = 1
+#     #fill a matrix where each row is a quadrant
+#     quadrants_bits = [[0 for x in range(BITS_BY_QUADRANT)] for y in range(n_quadrants)] 
+#     for i in range(len(bits)):
+#         if bits[i]:
+#             quadrants_bits[i//BITS_BY_QUADRANT][i%BITS_BY_QUADRANT] = 1
 
     # set the display to the entire screen
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)#, max(math.ceil(math.log(7**3, 2)), 8))
@@ -127,4 +137,4 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     pygame.quit()
     return
 
-display("commondaddyc askdjhg   asdkhlfsdkajfgka kjasfdasjdk sfgsadf gj sdjkf oooool")
+display("Salut comment tu vas ?")
