@@ -5,9 +5,40 @@ import pygame
 from pygame.locals import *
 
 def encode(string):
+    #encode the text in bytes
     in_bytes = string.encode("utf-8")
+    #compress the bytes
     compressed = zlib.compress(in_bytes, 9)
     return compressed
+
+def decode(compressed):
+    #decompress the bytes
+    in_bytes = zlib.decompress(compressed)
+    #decode the text in bytes
+    string = in_bytes.decode("utf-8")
+    return string
+
+def base_change(in_array, in_base, out_base):
+    starting_zeros = 0
+    num = 0
+    power = len(in_array)-1
+    while in_array[0] == 0:
+        in_array = in_array[1:]
+        starting_zeros += 1
+        power -= 1
+    while power >= 0:
+        adding = in_array[0]*(in_base**power)
+        num += adding
+        power -= 1
+        in_array = in_array[1:]
+    
+    new_num_array = []
+    current = num
+    while current!=0:
+        remainder=current%out_base
+        new_num_array = [remainder] + new_num_array
+        current = current // out_base
+    return ([0]*starting_zeros) + new_num_array
 
 def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     pygame.init()
@@ -51,16 +82,31 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
         MOST_DISTANCES.append((N_TONS**i)*(N_TONS-1))
     MOST_DISTANCES.append(N_COLORS-1)
     
+    #encode the text with compression
     encoded = encode(text)
-    bits = BitArray(encoded)
+    #takes the bits of the message
+    bits = list(map(int, BitArray(encoded).bin))
     
+    #change the input bits in our "colors-base"
+    color_base = base_change(bits, 2, N_COLORS)
+    
+    
+    #try to revert to the text
+    test = base_change(color_base, N_COLORS, 2)
+    print(bits == test)
+    
+    #print(decode(test))
+        
+    #bits in the last quadrant which will not use the whole screen
     remaining_bits = len(bits) % BITS_BY_QUADRANT
+    #number of quadrants needed for the text
     n_quadrants = len(bits) // BITS_BY_QUADRANT + (remaining_bits != 0)
-    print(type(BITS_BY_QUADRANT))
-    quadrants_bits = [[False for x in range(BITS_BY_QUADRANT)] for y in range(n_quadrants)] 
     
+    #fill a matrix where each row is a quadrant
+    quadrants_bits = [[0 for x in range(BITS_BY_QUADRANT)] for y in range(n_quadrants)] 
     for i in range(len(bits)):
-        quadrants_bits[i//BITS_BY_QUADRANT][i%BITS_BY_QUADRANT] = bits[i]
+        if bits[i]:
+            quadrants_bits[i//BITS_BY_QUADRANT][i%BITS_BY_QUADRANT] = 1
 
     # set the display to the entire screen
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)#, max(math.ceil(math.log(7**3, 2)), 8))
@@ -80,5 +126,5 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
 
     pygame.quit()
     return
-    
-display("salut")
+
+display("commondaddyc askdjhg   asdkhlfsdkajfgka kjasfdasjdk sfgsadf gj sdjkf oooool")
