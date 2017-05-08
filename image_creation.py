@@ -80,7 +80,7 @@ def colors_to_text(colors, n_tons):
     text = decode(encoded)
     return text
     
-def display(text, rows=3, columns=5, n_tons=2, cross_size=30):
+def display(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30):
     pygame.init()
     pygame.mouse.set_visible(False)
 
@@ -165,14 +165,25 @@ def display(text, rows=3, columns=5, n_tons=2, cross_size=30):
     ###############################
     ###############################
     
+    initial_time = pygame.time.get_ticks()
+    next_action_time = initial_time + 1000*5 #5 sec
     run = True
     current_quadrant = 0
     pygame.display.flip()
     while run:
         for event in pygame.event.get():
+            # START with key S
             if event.type == KEYDOWN and event.key == K_s:
+                # wait 2 secs more for the  first screen
+                #pygame.time.wait(2000)
+                pygame.time.set_timer(USEREVENT, refresh_interval)
+            # Loop and refresh screen
+            if event.type == USEREVENT:
                 if(current_quadrant >= n_quadrants):
-                    run = False
+                    # fill everything in black at the end
+                    for i in range(4):
+                        display.blit(particular_quadrants[4], QUADRANT_OFFSETS[i])
+                    pygame.display.flip()
                     break
                 config = current_quadrant%4
                 if config == 0:
@@ -181,7 +192,7 @@ def display(text, rows=3, columns=5, n_tons=2, cross_size=30):
                     if(current_quadrant+3 < n_quadrants):
                         display.blit(quadrants[current_quadrant+3], QUADRANT_OFFSETS[0])
                     else:
-                        #fill in black if nothin to display
+                        # fill in black if nothin to display
                         display.blit(particular_quadrants[4], QUADRANT_OFFSETS[0])
                 elif config == 1:
                     for i in (0,2,3):
@@ -189,7 +200,7 @@ def display(text, rows=3, columns=5, n_tons=2, cross_size=30):
                     if(current_quadrant+2 < n_quadrants):
                         display.blit(quadrants[current_quadrant+2], QUADRANT_OFFSETS[1])
                     else:
-                        #fill in black if nothin to display
+                        # fill in black if nothin to display
                         display.blit(particular_quadrants[4], QUADRANT_OFFSETS[1])
                 elif config == 2:
                     for i in (0,1,3):
@@ -197,7 +208,7 @@ def display(text, rows=3, columns=5, n_tons=2, cross_size=30):
                     if(current_quadrant+1 < n_quadrants):
                         display.blit(quadrants[current_quadrant+1], QUADRANT_OFFSETS[2])
                     else:
-                        #fill in black if nothin to display
+                        # fill in black if nothin to display
                         display.blit(particular_quadrants[4], QUADRANT_OFFSETS[2])
                     # at config 2, one more increment to skip the D
                     current_quadrant += 1
@@ -206,6 +217,7 @@ def display(text, rows=3, columns=5, n_tons=2, cross_size=30):
                   
                 pygame.display.flip()
                 current_quadrant += 1
+            # QUIT with key Q
             if event.type == KEYDOWN and event.key == K_q:
                 run = False
 
@@ -229,5 +241,5 @@ Then one day the tribe that claimed to be the oldest, the first, came upon an oa
 And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
-#(text, rows=3, columns=5, n_tons=2, cross_size=30)
-display(text200, 3, 5, 3)
+#(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
+display(text1000, 3, 5, 3, 300)
