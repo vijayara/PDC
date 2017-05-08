@@ -72,12 +72,19 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     # quadrant offsets
     W_OFFSET = QUADRANT_SIZE[0] + CROSS_SIZE
     H_OFFSET = QUADRANT_SIZE[1] + CROSS_SIZE
+    QUADRANT_OFFSETS = [(0, 0), (W_OFFSET, 0), (0, H_OFFSET), (W_OFFSET, H_OFFSET)]
+    
+    # number of tiles per quadrant
+    N_TILES = rows*columns
+    TILE_SIZE = (QUADRANT_SIZE[0]/columns, QUADRANT_SIZE[1]/rows)
+    TILE_OFFSETS = []
+    for c in range(columns):
+        for r in range(rows):
+            TILE_OFFSETS.append((r*TILE_SIZE[0], c*TILE_SIZE[1]))
 
     # number of possible levels for each color
     N_TONS = n_tons
     TON = [(i)*255/(N_TONS-1) for i in range(N_TONS)]
-    # number of tiles per quadrant
-    N_TILES = rows*columns
     # number of colors
     N_COLORS = N_TONS**3
 
@@ -104,22 +111,23 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     n_quadrants = len(color_message) // N_TILES + (remaining_colors != 0)
     print("number of quadrants:", n_quadrants)
     
-    #fill a matrix where each row is a quadrant
+    #fill a color matrix where each row is a quadrant
     quadrants_colors = [color_message[N_TILES*y:N_TILES*(y+1)] for y in range(n_quadrants)]
+    print(quadrants_colors)
     
-    
-    
-    
-    
+    #create every quadrants for the message
+    quadrants = [pygame.surface.Surface(QUADRANT_SIZE) for i in range(n_quadrants)]
+    for q in range(len(quadrants)):
+        for c in range(len(quadrants_colors[q])):
+            color = COLOR[quadrants_colors[q][c]]
+            rect = pygame.Rect(TILE_OFFSETS[c], TILE_SIZE)
+            quadrants[q].fill(color, rect)
     
     # set the display to the entire screen
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)#, max(math.ceil(math.log(7**3, 2)), 8))
-    # set the 4 quadrants with their positions
-    screen = [pygame.surface.Surface(QUADRANT_SIZE, 0, display)]*4
-
+    
     for i in range(4):
-        screen[i].fill(COLOR[MOST_DISTANCES[i]])
-        display.blit(screen[i], (((i%2)*W_OFFSET), (i//2)*H_OFFSET))
+        display.blit(quadrants[i], QUADRANT_OFFSETS[i])
 
     capture = True
     while capture:
