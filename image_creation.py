@@ -73,17 +73,11 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     W_OFFSET = QUADRANT_SIZE[0] + CROSS_SIZE
     H_OFFSET = QUADRANT_SIZE[1] + CROSS_SIZE
 
-    # number of rows and columns per quadrant
-    ROWS = rows
-    COLUMN = columns
-
     # number of possible levels for each color
     N_TONS = n_tons
     TON = [(i)*255/(N_TONS-1) for i in range(N_TONS)]
-
-    COMBINATIONS = N_TONS**(3*ROWS*COLUMN)
-    BITS_BY_QUADRANT = math.floor(math.log(COMBINATIONS, 2))
-
+    # number of tiles per quadrant
+    N_TILES = rows*columns
     # number of colors
     N_COLORS = N_TONS**3
 
@@ -102,22 +96,22 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     MOST_DISTANCES.append(N_COLORS-1)
     
     color_message = text_to_colors(text, N_COLORS)
+    print("verification text (reverse):", colors_to_text(color_message, N_COLORS))
     
-    print(colors_to_text(color_message, N_COLORS))
+    #number of colors not used at the end of the message
+    remaining_colors = N_TILES - (len(color_message) % N_TILES)
+    #number of quadrants needed for the message
+    n_quadrants = len(color_message) // N_TILES + (remaining_colors != 0)
+    print("number of quadrants:", n_quadrants)
+    
+    #fill a matrix where each row is a quadrant
+    quadrants_colors = [color_message[N_TILES*y:N_TILES*(y+1)] for y in range(n_quadrants)]
     
     
-        
-#     #bits in the last quadrant which will not use the whole screen
-#     remaining_bits = len(bits) % BITS_BY_QUADRANT
-#     #number of quadrants needed for the text
-#     n_quadrants = len(bits) // BITS_BY_QUADRANT + (remaining_bits != 0)
     
-#     #fill a matrix where each row is a quadrant
-#     quadrants_bits = [[0 for x in range(BITS_BY_QUADRANT)] for y in range(n_quadrants)] 
-#     for i in range(len(bits)):
-#         if bits[i]:
-#             quadrants_bits[i//BITS_BY_QUADRANT][i%BITS_BY_QUADRANT] = 1
-
+    
+    
+    
     # set the display to the entire screen
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)#, max(math.ceil(math.log(7**3, 2)), 8))
     # set the 4 quadrants with their positions
@@ -137,4 +131,4 @@ def display(text, cross_size=30, rows=3, columns=3, n_tons=2):
     pygame.quit()
     return
 
-display("Salut comment tu vas ?")
+display("Salut, comment vas-tu ?")
