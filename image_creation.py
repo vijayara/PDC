@@ -133,12 +133,14 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=
     print("-> Remaining colors:", remaining_colors)
     print("-> Colors of the message:\n", quadrants_colors)
     
-    # create particular quadrants : 4 starting quadrants (red, green, blue, white) plus the black one
+    # create particular quadrants : 4 starting quadrants (red, green, blue)
+    # plus yellow to avoid white plus the black one
     particular_quadrants = [pygame.surface.Surface(QUADRANT_SIZE) for i in range(5)]
-    for i in range(4):
+    for i in range(3):
         particular_quadrants[i].fill(COLOR[MOST_DISTANCES[i]])
-    particular_quadrants[4].fill(COLOR[0])
-
+    yellow_index = (N_TONS**2)*(N_TONS-1)+(N_TONS)*(N_TONS-1)
+    particular_quadrants[3].fill(COLOR[yellow_index]) #yellow
+    particular_quadrants[4].fill(COLOR[0]) #black
     
     # create every quadrants for the message
     quadrants = [pygame.surface.Surface(QUADRANT_SIZE) for i in range(n_quadrants)]
@@ -175,7 +177,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=
             # START with key S
             if event.type == KEYDOWN and event.key == K_s:
                 # wait 2 secs more for the  first screen
-                #pygame.time.wait(2000)
+                pygame.time.wait(2000)
                 pygame.time.set_timer(USEREVENT, refresh_interval)
             # Loop and refresh screen
             if event.type == USEREVENT:
@@ -242,4 +244,4 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
 #(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(text1000, 3, 5, 3, 300)
+display(text1000, 3, 5, 2, 300)
