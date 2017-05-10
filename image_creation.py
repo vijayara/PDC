@@ -151,7 +151,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=
             quadrants[q].fill(color, rect)
     
     # set the display to the entire screen
-    display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)#, max(math.ceil(math.log(7**3, 2)), 8))
+    display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     for i in range(4):
         display.blit(particular_quadrants[i], QUADRANT_OFFSETS[i])
 
@@ -244,4 +244,4 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
 #(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(text1000, 3, 5, 2, 50)
+display(text1000, 3, 5, 2, 100)
