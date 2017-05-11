@@ -5,14 +5,15 @@ from pygame.locals import *
 def take_shots(n_shots=20, capture_interval=1000):
     pygame.init()
     pygame.camera.init()
-    SIZE = (480, 320)
+    
     RESOLUTION = (1280, 720)
-    
-    FILENAME = 'shots/pic'
-    
-    display = pygame.display.set_mode(SIZE, 0)
     cam = pygame.camera.Camera("/dev/video0", RESOLUTION)
     cam.start()
+    USABLE_RECT = (RESOLUTION[0]//3, RESOLUTION[1]//3)*2
+    
+    SIZE = (480, 320)
+    display = pygame.display.set_mode(SIZE, 0)
+    FILENAME = 'shots/pic'
     
     run = 1
     images = []
@@ -25,7 +26,7 @@ def take_shots(n_shots=20, capture_interval=1000):
                 pygame.time.set_timer(USEREVENT+1, (n_shots+1)*capture_interval+100)
             if event.type == USEREVENT:
                 if cam.query_image():
-                    image = cam.get_image()
+                    image = cam.get_image().subsurface(USABLE_RECT)
                     images.append(image)
                     times.append(pygame.time.get_ticks())
                 else:
