@@ -24,7 +24,7 @@ def decode(compressed):
 
 def color_creation(n_tons):
     #select the different values
-    ton = [(i)*255/(n_tons-1) for i in range(n_tons)]
+    ton = [(i)*255//(n_tons-1) for i in range(n_tons)]
     
     # fill the color array
     colors = []
@@ -244,4 +244,4 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
 #(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(text1000, 3, 5, 2, 100)
+display(text1000, 3, 5, 2, 200)
