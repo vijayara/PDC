@@ -2,6 +2,16 @@ import pygame, sys
 import pygame.camera
 from pygame.locals import *
 
+def closest_color(detected_color, n_tons):
+    delta = 256//(2*(n_tons-1))
+
+    r = ((detected_color[0]+delta)*(n_tons-1))//255
+    g = ((detected_color[1]+delta)*(n_tons-1))//255
+    b = ((detected_color[2]+delta)*(n_tons-1))//255
+    
+    color_index = r*n_tons**2 + g*n_tons + b
+    return color_index
+
 def take_shots(n_shots=20, capture_interval=1000):
     pygame.init()
     pygame.camera.init()
