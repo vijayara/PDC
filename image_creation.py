@@ -80,7 +80,7 @@ def colors_to_text(colors, n_tons):
     text = decode(encoded)
     return text
     
-def display(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30):
+def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=30):
     pygame.init()
     pygame.mouse.set_visible(False)
 
@@ -244,4 +244,4 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
 #(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(text1000, 3, 5, 2, 200)
+display(text1000, 3, 5, 2, 110)

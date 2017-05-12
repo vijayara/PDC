@@ -12,7 +12,7 @@ def closest_color(detected_color, n_tons):
     color_index = r*n_tons**2 + g*n_tons + b
     return color_index
 
-def take_shots(n_shots=20, capture_interval=1000):
+def take_shots(n_shots=20, capture_interval=110):
     pygame.init()
     pygame.camera.init()
     
