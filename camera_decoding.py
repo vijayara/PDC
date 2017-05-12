@@ -12,7 +12,7 @@ def closest_color(detected_color, n_tons):
     color_index = r*n_tons**2 + g*n_tons + b
     return color_index
 
-def take_shots(n_shots=20, capture_interval=110):
+def take_shots(n_shots=20, capture_interval=1000):
     pygame.init()
     pygame.camera.init()
     
@@ -20,20 +20,33 @@ def take_shots(n_shots=20, capture_interval=110):
     cam = pygame.camera.Camera("/dev/video0", RESOLUTION)
     cam.start()
     USABLE_RECT = (RESOLUTION[0]//3, RESOLUTION[1]//3)*2
-    
-    SIZE = (480, 320)
-    display = pygame.display.set_mode(SIZE, 0)
+        
+    display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     FILENAME = 'shots/pic'
     
+    preparation = 1
     run = 1
     images = []
     times = []
-    while run:
+    while preparation:
+        display.blit(cam.get_image().subsurface(USABLE_RECT), (0,0))
+        pygame.display.flip()
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_s:
+                pygame.time.wait(1500)# you have 1.5 sec to remove hands of canal
                 pygame.time.set_timer(USEREVENT, capture_interval)
                 # take one more shot because we throw away the 1st one
                 pygame.time.set_timer(USEREVENT+1, (n_shots+1)*capture_interval+100)
+                preparation = 0
+                display.fill((0,0,0))
+                pygame.display.flip()
+            if event.type == QUIT:
+                preparation = 0
+                run = 0
+                cam.stop()
+                pygame.quit()
+    while run:
+        for event in pygame.event.get():
             if event.type == USEREVENT:
                 if cam.query_image():
                     image = cam.get_image().subsurface(USABLE_RECT)
@@ -45,10 +58,11 @@ def take_shots(n_shots=20, capture_interval=110):
                 run = 0
                 cam.stop()
                 pygame.quit()
+    
     print("Number of images:" + str(len(images)))
     for i in range(len(images)-1):
-        pygame.image.save(images[i+1], FILENAME+str(i+1)+'.jpg')
+        pygame.image.save(images[i+1], FILENAME+str(i+1)+'.png')
         print("Interval", str(i)+"-"+str(i+1)+": "+str(times[i+1]-times[i]))
     
                 
-take_shots(100, 110)
+take_shots(20, 110)
