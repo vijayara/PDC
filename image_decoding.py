@@ -1,8 +1,17 @@
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 from crop import*
-#from camera_decoding import closest_color
 import numpy as np
 import os
+
+# return the closest color which is in our color set from a given detected color
+def closest_color(detected_color, n_tons):
+    delta = 256//(2*(n_tons-1))
+    r = ((int(detected_color[0])+delta)*(n_tons-1))//255
+    g = ((int(detected_color[1])+delta)*(n_tons-1))//255
+    b = ((int(detected_color[2])+delta)*(n_tons-1))//255
+    
+    color_index = r*n_tons**2 + g*n_tons + b
+    return color_index
 
 # decode_box takes a box, which is made up of paritions, and
 # returns the average (R, G, B) vector for each partition.
@@ -17,13 +26,13 @@ def decode_box(image, box, n_tones):
             for j in range(top[0], bottom[0]):
                 mean_tone += image[i][j]
 
-        #tone_list.append(closest_color(mean_tone, n_tones))
-        tone_list.append(mean_tone * normalise)
+        tone_list.append(closest_color(mean_tone*normalise, n_tones))
+        # tone_list.append(mean_tone * normalise)
 
     return tone_list
 
 
-# decode_image takes a list of boxes and returns the corresponding 
+# decode_image takes a list of boxes and returns the corresponding
 # decode_box for each box
 def decode_image(image, boxes, n_tones):
     box_tone_list = []
@@ -65,5 +74,5 @@ partitions = get_unit_crop_coorinates(arr, dim, v_part, h_part)
 ans = decode_image(arr2, partitions, 2)
 
 for (a, b) in zip(ans[2], ans[1]):
-    print(a - b)
+    print(a)
 
