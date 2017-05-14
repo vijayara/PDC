@@ -24,17 +24,17 @@ def get_color_positions(arr, dim):
     threshC = np.array([180, 120, 120]) # Red 
     threshD = np.array([200, 200, 120]) # Yellow
 
-    def isA(a):
-        return a[0] < threshA[0] and a[1] < threshA[1] and a[2] > threshA[2]
+    def isA(color):
+        return color[0] < threshA[0] and color[1] < threshA[1] and color[2] > threshA[2]
 
-    def isB(a):
-        return a[0] < threshB[0] and a[1] > threshB[1] and a[2] < threshB[2]
+    def isB(color):
+        return color[0] < threshB[0] and color[1] > threshB[1] and color[2] < threshB[2]
 
-    def isC(a):
-        return a[0] > threshC[0] and a[1] < threshC[1] and a[2] < threshC[2]
+    def isC(color):
+        return color[0] > threshC[0] and color[1] < threshC[1] and color[2] < threshC[2]
 
-    def isD(a):
-        return a[0] > threshD[0] and a[1] > threshD[1] and a[2] < threshD[2]
+    def isD(color):
+        return color[0] > threshD[0] and color[1] > threshD[1] and color[2] < threshD[2]
 
 
     locA, locB, locC, locD = (-1, -1), (-1, -1), (-1, -1), (-1, -1)

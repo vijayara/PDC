@@ -2,6 +2,7 @@ from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 from crop import*
 #from camera_decoding import closest_color
 import numpy as np
+import os
 
 # decode_box takes a box, which is made up of paritions, and
 # returns the average (R, G, B) vector for each partition.
@@ -36,10 +37,10 @@ def decode_image(image, boxes, n_tones):
 
 
 # Image with 4 colors for edge detection
-file_name = "/Users/aleman/GDrive/EPFL/ba3/pdc/PDC/Captures/shots1/pic2.png"
+file_name = os.path.join(os.path.dirname(__file__), 'Captures/shots1/pic2.png')
 
 # Image with some message (i.e. screen partition encodings)
-file_name2 = "/Users/aleman/GDrive/EPFL/ba3/pdc/PDC/Captures/shots1/pic12.png"
+file_name2 = os.path.join(os.path.dirname(__file__), 'Captures/shots1/pic12.png')
 
 img = Image.open(file_name)
 img2 = Image.open(file_name2)
