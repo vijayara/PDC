@@ -71,8 +71,8 @@ draw = ImageDraw.Draw(source_img)
 v_part, h_part = 3, 5
 
 partitions = get_unit_crop_coorinates(arr, dim, v_part, h_part)
-ans = decode_image(arr2, partitions, 2)
+decoded = decode_image(arr2, partitions, 2)
 
-for (a, b) in zip(ans[2], ans[1]):
-    print(a)
+for index in decoded:
+    print(index)
 
