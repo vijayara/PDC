@@ -34,13 +34,14 @@ def take_shots(n_shots=20, capture_interval=1000):
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_s:
                 pygame.time.wait(1500)# you have 1.5 sec to remove hands of canal
+                cam.get_image()
                 pygame.time.set_timer(USEREVENT, capture_interval)
                 # take one more shot because we throw away the 1st one
                 pygame.time.set_timer(USEREVENT+1, (n_shots+1)*capture_interval+100)
                 preparation = 0
                 display.fill((0,0,0))
                 pygame.display.flip()
-            if event.type == QUIT:
+            if event.type == KEYDOWN and event.key == K_q:
                 preparation = 0
                 run = 0
                 cam.stop()
@@ -54,7 +55,7 @@ def take_shots(n_shots=20, capture_interval=1000):
                     times.append(pygame.time.get_ticks())
                 else:
                     print("CAMERA NOT READY")
-            if (event.type == USEREVENT+1) or (event.type == QUIT):
+            if (event.type == USEREVENT+1):
                 run = 0
                 cam.stop()
                 pygame.quit()
@@ -65,4 +66,4 @@ def take_shots(n_shots=20, capture_interval=1000):
         print("Interval", str(i)+"-"+str(i+1)+": "+str(times[i+1]-times[i]))
     
                 
-take_shots(20, 110)
+take_shots(30, 200)

@@ -264,6 +264,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
     pygame.quit()
     return
 
+helloWorld = 'Hello, world !'
 text200 = """In the midst of the Great Desert lived two tribes of people.
 Both were nomadic in nature and continuously traveled across the arid landscape,
 from oasis to oasis. Although each tribe considered themselves..."""
@@ -282,4 +283,4 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
 #(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(text1000, 3, 5, 2, 5000)
+display(helloWorld, 3, 5, 2, 200)
