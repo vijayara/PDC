@@ -2,7 +2,6 @@
 # Authors: Thierry B., Niroshan V., Ignacio A.
 
 import math
-import random
 from bitstring import BitArray
 import zlib
 import pygame
@@ -145,7 +144,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
     n_dictionnary_padding_quadrant = max_tiles_for_dpq // N_TILES + ((max_tiles_for_dpq%N_TILES) != 0)
     
     # sequence of colors to send the number of padding colors
-    colors_for_padding = base_change([remaining_colors], 10, n_colors)
+    colors_for_padding = base_change([remaining_colors], 10, N_COLORS)
     
     # real number of tiles for padding in function of the message
     n_tiles_for_padding = len(colors_for_padding)
