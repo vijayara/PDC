@@ -49,12 +49,9 @@ def take_shots(n_shots=20, capture_interval=1000):
     while run:
         for event in pygame.event.get():
             if event.type == USEREVENT:
-                if cam.query_image():
-                    image = cam.get_image().subsurface(USABLE_RECT)
-                    images.append(image)
-                    times.append(pygame.time.get_ticks())
-                else:
-                    print("CAMERA NOT READY")
+                image = cam.get_image().subsurface(USABLE_RECT)
+                images.append(image)
+                times.append(pygame.time.get_ticks())
             if (event.type == USEREVENT+1):
                 run = 0
                 cam.stop()
@@ -66,4 +63,4 @@ def take_shots(n_shots=20, capture_interval=1000):
         print("Interval", str(i)+"-"+str(i+1)+": "+str(times[i+1]-times[i]))
     
                 
-take_shots(30, 200)
+take_shots(100, 110)
