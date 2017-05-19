@@ -215,7 +215,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
             # START with key S
             if event.type == KEYDOWN and event.key == K_s:
                 # wait 2 secs more for the  first screen
-                pygame.time.wait(int(1500 + refresh_interval*5.5))
+                pygame.time.delay(int(1500 + refresh_interval*5.5))
                 pygame.time.set_timer(USEREVENT, refresh_interval)
             # Loop and refresh screen
             if event.type == USEREVENT:
@@ -283,4 +283,4 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
 #(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(helloWorld, 3, 5, 2, 200)
+display(text200, 3, 5, 2, 300)
