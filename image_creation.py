@@ -283,4 +283,4 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
 #(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(text200, 3, 5, 2, 300)
+display(text1000, 3, 5, 2, 440)

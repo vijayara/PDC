@@ -63,4 +63,4 @@ def take_shots(n_shots=20, capture_interval=1000):
         print("Interval", str(i)+"-"+str(i+1)+": "+str(times[i+1]-times[i]))
     
                 
-take_shots(35, 500)
+take_shots(150, 110)
