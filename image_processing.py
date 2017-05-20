@@ -13,17 +13,18 @@ noMask = 'noMask'
 
 mask = (-1, -1)
 
-
+avgColorDelta = 4
 v_part, h_part = 3, 5
-
-def flattenBorder(border):
-    (top, bottom) = border
-    return (top[0], top[1], bottom[0], bottom[1])
 
 
 # If we have 4 samples of each image, and we want to take each third one:
 timingInterpolationStart = 2 
 timingInterpolationJump = 4
+
+# turn border into right format for .crop method
+def flattenBorder(border):
+    (top, bottom) = border
+    return (top[0], top[1], bottom[0], bottom[1])
 
 # Get mask returns the mask type based on the location list (see crop)
 def getMask(location_list):
@@ -45,8 +46,6 @@ def getMask(location_list):
 
     return noMask
 
-
-
 # returns the mask type as well as the corners associated.
 def extractStartingScreen(images):
 
@@ -66,10 +65,8 @@ def extractStartingScreen(images):
 # takes an image and returns the arrays corresponding to the quadrants
 def getQuadrants(border,image):
     img = Image.open(image)
-    (top, bottom) = border[0]
-    (top2, bottom2) = border[1]
-    arr1 = np.array(img.crop((top[0], top[1], bottom[0], bottom[1])))
-    arr2 = np.array(img.crop((top2[0], top2[1], bottom2[0], bottom2[1])))
+    arr1 = np.array(img.crop(flattenBorder(border[0])))
+    arr2 = np.array(img.crop(flattenBorder(border[1])))
     return (arr1, arr2)
 
 # Euclidian distance between vector c1 and c2
@@ -78,7 +75,7 @@ def distance(c1, c2):
 
 # returns true if the colors passed (c1, and c2) correspon to the 
 # starting screen colors 
-def isStartingScreen(c1, c2, colorFirstQuad, colorSecondQaud):
+def isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud):
     delta = 5 # Note from expermiment, same screen seems to the order of 2, while different around 60
     return distance(c1, colorFirstQuad) < delta and distance(c2, colorSecondQaud) < delta
 
@@ -96,13 +93,96 @@ def findEndOfStartingSequence(images, borders, colorFirstQuad, colorSecondQaud):
         c1 = averageColor(arr1, 0)
         c2 = averageColor(arr2, 0)
 
-        if (not isStartingScreen(c1, c2, colorFirstQuad, colorSecondQaud)):
+        if (not isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud)):
             endOfStartingSequenceReached = True
             return itr
 
         itr = itr + 1
 
     return itr
+
+# Returns index of the last message, s.t. images[:endOfMessage] is the message
+# Index is the location of the last image
+def findEndOfMessage(images, borders):
+
+    endOfMessageReached = False
+
+    index = len(images) - 1
+
+    (arr1, arr2) = getQuadrants(borders, images[index])
+    colorFirstQuad = averageColor(arr1, 0)
+    colorSecondQaud = averageColor(arr2, 0)
+    
+    while not endOfMessageReached:
+        
+        index = index - 1
+
+        (arr1, arr2) = getQuadrants(borders, images[index])
+        c1 = averageColor(arr1, 0)
+        c2 = averageColor(arr2, 0)
+
+        if (not isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud)):
+            endOfStartingSequenceReached = True
+            return index
+
+        
+    return index
+
+# returns the border, maskCase as well as the image list of
+# Alphabet + padding value + Message
+# Need to discard green part if it is in same screen as useful quad.
+def getBordersMaskAndImages(images):
+
+    (borders, maskCase, quadColors) = extractStartingScreen(images)
+    
+    endOfStartingSequence = findEndOfStartingSequence(images, borders, quadColors[0], quadColors[1])
+    endOfMessage = findEndOfMessage(images, borders)
+
+    images = images[endOfStartingSequence:endOfMessage + 1]
+    images = images[timingInterpolationStart::timingInterpolationJump]
+
+    return(borders, maskCase, images)
+
+# transforms a sequence of images into the corresponding quadrant array list
+# still needs to be sorted vis a vis message sequence 
+def getQuadrantArrayList(images, borders):
+
+    quadrantArrays = []
+    
+    for image in images:
+        (arr1, arr2) = getQuadrants(borders, image)
+        quadrantArrays.append(arr1)
+        quadrantArrays.append(arr2)
+    
+    return quadrantArrays
+
+# returns the a list where each element is a sequence of vectors of colors
+# corresponding to the quadrant in the screen quadrant space.
+def getUnitArrayList(images, borders):
+
+    quadrantUnitArrays = []
+    box = get_unit_crop_coorinates(borders, v_part, h_part)
+    
+    for image in images:
+        img = Image.open(image)
+        arr = np.array(img)
+
+        firstQuadColorSequence = []
+        for (top, bottom) in box[0]:
+    
+            mean_tone = averageColor(arr, avgColorDelta, (top, bottom))
+            firstQuadColorSequence.append(mean_tone)
+
+        secondQuadColorSequence = []
+        for (top, bottom) in box[1]:
+
+            mean_tone = averageColor(arr, avgColorDelta, (top, bottom))
+            secondQuadColorSequence.append(mean_tone)
+
+        quadrantUnitArrays.append(firstQuadColorSequence)
+        quadrantUnitArrays.append(secondQuadColorSequence)
+
+    return quadrantUnitArrays
 
 
 
@@ -118,28 +198,46 @@ images = []
 for index in range(start_seq, end_seq + 1):
     images.append(file_path + str(index) + extension)
 
-(borders, maskCase, quadColors) = extractStartingScreen(images)
-endOfStartingSequence = findEndOfStartingSequence(images, borders, quadColors[0], quadColors[1])
 
-# Remove Starting sequence and interpolate the images at proper interval.
-images = images[endOfStartingSequence:]
-images = images[timingInterpolationStart::timingInterpolationJump]
+(borders, maskCase, images) = getBordersMaskAndImages(images)
 
-#print(images)
-
-
-img = Image.open(images[0])
-arr = np.array(img)
-
-
-box = get_unit_crop_coorinates(borders, v_part, h_part)
-print(' - - -  ')
-print(box[1])
+#a = getQuadrantArrayList(images, borders)
 #
-#
-cols = getAlphabet(arr, box[1], 8)
-for c in cols:
-    print(c)
+#print(a[0].shape)
+
+
+tt = getUnitArrayList(images, borders)
+
+alphabet = tt[1][:8]
+
+for l in alphabet:
+    print(l)
+
+print(' - -  ')
+
+q1 = estimateQuadrantColors(tt[0], alphabet)
+q2 = estimateQuadrantColors(tt[1], alphabet)
+
+print(' q1 -  ')
+for q in range(len(q1)):
+    print(q1[q],tt[0][q])
+
+print(' - -  ')
+for q in range(len(q2)):
+    print(q2[q],tt[1][q])
+
+#img = Image.open(images[0])
+#arr = np.array(img)
+##
+##
+#box = get_unit_crop_coorinates(borders, v_part, h_part)
+#print(' - - -  ')
+#print(box[1])
+##
+##
+#cols = getAlphabet(arr, box[0], 8)
+#for c in cols:
+#    print(c)
 
 
 #

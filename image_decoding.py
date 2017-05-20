@@ -3,16 +3,20 @@ from crop import*
 import numpy as np
 import os
 
-# return the closest color which is in our color set from a given detected color.
-# If 2 tons, use a threshold more accurate than closest_color
-def closest_color(detected_color, n_tons, threshold=220):
-    delta = 256//(2*(n_tons-1))
-    r = detected_color[0] > threshold if n_tons == 2 else ((int(round(detected_color[0]))+delta)*(n_tons-1))//255
-    g = detected_color[1] > threshold if n_tons == 2 else ((int(round(detected_color[1]))+delta)*(n_tons-1))//255
-    b = detected_color[2] > threshold if n_tons == 2 else ((int(round(detected_color[2])+delta))*(n_tons-1))//255
-    
-    color_index = r*n_tons**2 + g*n_tons + b
-    return color_index
+# returns the letter with the closest euclidian distance to the detected color.
+def closestColor(detected_color, alphabet):
+    alphabetLength = len(alphabet)
+    estimatedColor = 0
+    minColorDistance = np.linalg.norm(detected_color - alphabet[0]) 
+
+    for index in range(1, alphabetLength):
+        colorDistance = np.linalg.norm(detected_color - alphabet[index]) 
+
+        if colorDistance < minColorDistance:
+            estimatedColor = index
+            minColorDistance = colorDistance 
+            
+    return estimatedColor
 
 # returns the average (R, G, B) vector for the sub array in the arr enclosed by border.
 # if border =-1,-1 it will go through the whole array
@@ -44,7 +48,7 @@ def decode_box(image, box, n_tones, delta):
     
     tone_list = []
     for (top, bottom) in box:
-        #mean_tone = averageColor(image, 0, (top, bottom))
+        #mean_tone = averageColor(ima)e, 0, (top, bottom))
         (x, y) = centerPoint((top, bottom))
         mean_tone = np.resize(image[y][x], (3,))
 
@@ -59,14 +63,23 @@ def decode_box(image, box, n_tones, delta):
 
     return tone_list
 
+# turns a sequence of colors into estimated alphabet letters.
+def estimateQuadrantColors(quadColorSequence, alphabet):
+    estimatesColorSquence = []
+
+    for detected_color in quadColorSequence:
+        estimatesColorSquence.append(closestColor(detected_color, alphabet))
+
+    return estimatesColorSquence
+
 def getAlphabet(image, box, alphabetLength):
     n_box = len(box)
     
     tone_list = []
     for (top, bottom) in box:
-        #mean_tone = averageColor(image, 0, (top, bottom))
-        (x, y) = centerPoint((top, bottom))
-        mean_tone = np.resize(image[y][x], (3,))
+        mean_tone = averageColor(image, 3, (top, bottom))
+        #(x, y) = centerPoint((top, bottom))
+        #mean_tone = np.resize(image[y][x], (3,))
 
         tone_list.append(mean_tone)
 
