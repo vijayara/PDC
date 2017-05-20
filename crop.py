@@ -3,90 +3,96 @@ import math
 import numpy as np
 
 
+#threshQ1 = np.array([170, 170, 253]) # Blue
+#threshQ2 = np.array([120, 160, 120]) # Green
+#threshQ3 = np.array([180, 120, 120]) # Red 
+#threshQ4 = np.array([200, 200, 120]) # Yellow
+
+threshQ1 = np.array([170, 170, 240]) # Blue
+threshQ2 = np.array([120, 160, 120]) # Green
+threshQ3 = np.array([180, 120, 120]) # Red 
+threshQ4 = np.array([200, 200, 120]) # Yellow
+
+def isQ1(color):
+    return color[0] < threshQ1[0] and color[1] < threshQ1[1] and color[2] > threshQ1[2]
+
+def isQ2(color):
+    return color[0] < threshQ2[0] and color[1] > threshQ2[1] and color[2] < threshQ2[2]
+
+def isQ3(color):
+    return color[0] > threshQ3[0] and color[1] < threshQ3[1] and color[2] < threshQ3[2]
+
+def isQ4(color):
+    return color[0] > threshQ4[0] and color[1] > threshQ4[1] and color[2] < threshQ4[2]
 
 # get_color_positions returns a list of pairs, where each pair corresponds to the 
-# coordinate of a one of the main colors (A, B, C, D). (They are returned
+# coordinate of a one of the main colors (Q1, Q2, Q3, Q4). (They are returned
 # in this order). Using get_corner we can hence find the edges needed for
-# croping the subscreens A, B, C and D.
+# croping the subscreens Q1, Q2, Q3 and Q4.
 # 
-    #####################   A, B, C, D correspond to the main screen areas
-    ###   A   ##   B   ##   
+    #####################   Q1, Q2, Q3, Q4 correspond to the main screen areas
+    ###   Q1   ##   Q2   ##   
     #####################  
-    ###   D   ##   C   ##   
+    ###   Q4   ##   Q3   ##   
     #####################
 #
 # Note that testing is needed to find good thresholds that gaurantee that we
 # our color positions are indeed the subscreens.
 def get_color_positions(arr, dim):
 
-    threshA = np.array([170, 170, 253]) # Blue
-    threshB = np.array([120, 160, 120]) # Green
-    threshC = np.array([180, 120, 120]) # Red 
-    threshD = np.array([200, 200, 120]) # Yellow
-
-    def isA(color):
-        return color[0] < threshA[0] and color[1] < threshA[1] and color[2] > threshA[2]
-
-    def isB(color):
-        return color[0] < threshB[0] and color[1] > threshB[1] and color[2] < threshB[2]
-
-    def isC(color):
-        return color[0] > threshC[0] and color[1] < threshC[1] and color[2] < threshC[2]
-
-    def isD(color):
-        return color[0] > threshD[0] and color[1] > threshD[1] and color[2] < threshD[2]
 
 
-    locA, locB, locC, locD = (-1, -1), (-1, -1), (-1, -1), (-1, -1)
 
-    foundA, foundB, foundC, foundD = False, False, False, False
+    locQ1, locQ2, locQ3, locQ4 = (-1, -1), (-1, -1), (-1, -1), (-1, -1)
+
+    foundQ1, foundQ2, foundQ3, foundQ4 = False, False, False, False
     nbrCornersFound = 0
 
     for i in range(dim[0]):
         for j in range(dim[1]):
 
-            if (not foundA) and isA(arr[i][j]):
-                locA = (i, j)
-                foundA = True
+            if (not foundQ1) and isQ1(arr[i][j]):
+                locQ1 = (i, j)
+                foundQ1 = True
                 nbrCornersFound+=1
 
-            elif (not foundB) and isB(arr[i][j]):
-                locB = (i, j)
-                foundB = True
+            elif (not foundQ2) and isQ2(arr[i][j]):
+                locQ2 = (i, j)
+                foundQ2 = True
                 nbrCornersFound+=1
             
-            elif ((not foundC) and isC(arr[i][j])):
-                locC = (i, j)
-                foundC = True
+            elif ((not foundQ3) and isQ3(arr[i][j])):
+                locQ3 = (i, j)
+                foundQ3 = True
                 nbrCornersFound+=1
 
-            elif ((not foundD) and isD(arr[i][j])):
-                locD = (i, j)
-                foundD = True
+            elif ((not foundQ4) and isQ4(arr[i][j])):
+                locQ4 = (i, j)
+                foundQ4 = True
                 nbrCornersFound+=1
 
             #if (nbrCornersFound >= 2):
-            #    return [locA, locB, locC, locD]
-
-    return [locA, locB, locC, locD]
+            #    return [locQ1, locQ2, locQ3, locQ4]
+            #print(foundQ1, foundQ2)
+    return [locQ1, locQ2, locQ3, locQ4]
 
 # is_edge detects whether c2 is in the edge, current implementation is quite
 # simple and dosen't look at the previous neighbour (i.e. c1).
 def is_edge(c1, c2, color):
 
-    threshA = 170#np.array([170, 170, 170]) # Blue
-    threshB = 170#np.array([120, 160, 120]) # Green
-    threshC = 170#np.array([180, 120, 120]) # Red 
-    threshD = 200#np.array([200, 200, 120]) # Yellow
+    threshQ1 = 170#np.array([170, 170, 170]) # Q2lue
+    threshQ2 = 170#np.array([120, 160, 120]) # Green
+    threshQ3 = 170#np.array([180, 120, 120]) # Red 
+    threshQ4 = 200#np.array([200, 200, 120]) # Yellow
 
-    if (color == 'A'):
-        return c2[2] < threshA
-    elif (color == 'B'):
-        return c2[1] < threshB
-    elif (color == 'C'):
-        return c2[0] < threshC
-    elif (color == 'D'):
-        return c2[0] < threshD or c2[1] < threshD
+    if (color == 'Q1'):
+        return c2[2] < threshQ1
+    elif (color == 'Q2'):
+        return c2[1] < threshQ2
+    elif (color == 'Q3'):
+        return c2[0] < threshQ3
+    elif (color == 'Q4'):
+        return c2[0] < threshQ4 or c2[1] < threshQ4
     else:
         return False
 
@@ -126,7 +132,7 @@ def get_corner(arr, i, j, way, color):
 # can find, where top and bottom are the respective top left and bottom right
 # corners which can be used to crop said color screen partitions.
 def get_borders(arr, dim):
-    colors = ['A', 'B', 'C', 'D']
+    colors = ['Q1', 'Q2', 'Q3', 'Q4']
     locations = get_color_positions(arr, dim) 
     borders = []
     for ((i, j), color) in zip(locations, colors):
@@ -167,9 +173,8 @@ def parition(border, vertical_partitions=1, horizontal_partitions=1):
 
 # get_unit_crop_coordinates returns a list where each element
 # contains a list with the coordinates needed to crop the unites.
-def get_unit_crop_coorinates(arr, dim, v_part, h_part):
+def get_unit_crop_coorinates(borders, v_part, h_part):
 
-    borders = get_borders(arr, dim)
     unit_crop_coord = []
     for border in borders:
         unit_crop_coord.append(parition(border, v_part, h_part))
