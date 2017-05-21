@@ -158,31 +158,67 @@ def getQuadrantArrayList(images, borders):
 
 # returns the a list where each element is a sequence of vectors of colors
 # corresponding to the quadrant in the screen quadrant space.
-def getUnitArrayList(images, borders):
+def getQuadColorSequenceList(images, borders):
 
-    quadrantUnitArrays = []
-    box = get_unit_crop_coorinates(borders, v_part, h_part)
+    quadColorSequenceList = []
+    bordersOfSubQuadrant = getBordersOfSubQuadrant(borders, v_part, h_part)
     
     for image in images:
         img = Image.open(image)
         arr = np.array(img)
+        
+        ##  For testing cropping partitions
+ #       img = Image.open('testsmay19/good1/pic29.png')
+ #       source_img = img.convert("RGBA")
+ #       draw = ImageDraw.Draw(source_img)
+
+ #       itr = 0;
+        ##
 
         firstQuadColorSequence = []
-        for (top, bottom) in box[0]:
+        for (top, bottom) in bordersOfSubQuadrant[0]:
     
             mean_tone = averageColor(arr, avgColorDelta, (top, bottom))
             firstQuadColorSequence.append(mean_tone)
+            
+
 
         secondQuadColorSequence = []
-        for (top, bottom) in box[1]:
+        for (top, bottom) in bordersOfSubQuadrant[1]:
 
             mean_tone = averageColor(arr, avgColorDelta, (top, bottom))
             secondQuadColorSequence.append(mean_tone)
 
-        quadrantUnitArrays.append(firstQuadColorSequence)
-        quadrantUnitArrays.append(secondQuadColorSequence)
+#            if image == 'testsmay19/good1/pic29.png':
+#                print('wuut')
+#                if itr % 2 == 0:
+#                    draw.rectangle((top, bottom), fill="white")
+#                else:
+#                    draw.rectangle((top, bottom), fill="red")
+#                itr = itr + 1
 
-    return quadrantUnitArrays
+        quadColorSequenceList.append(firstQuadColorSequence)
+        quadColorSequenceList.append(secondQuadColorSequence)
+
+#        if image == 'testsmay19/good1/pic29.png':
+#            source_img.save('quickTest22.png', "PNG")
+#
+
+    return quadColorSequenceList
+
+
+def decodeImage(images):
+    (borders, maskCase, images) = getBordersMaskAndImages(images)
+
+    quadColorSequenceList = getQuadColorSequenceList(images, borders)
+
+    # Sort  quadColorSequenceList in function of maskCase
+    # Note that quadColorSequenceList[0] should contain the quadrant
+    # which includes the starting alphabet.
+
+    alphabet = getAlphabet(quadColorSequenceList[1][:8])
+
+    Q = estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet)
 
 
 
@@ -201,36 +237,37 @@ for index in range(start_seq, end_seq + 1):
 
 (borders, maskCase, images) = getBordersMaskAndImages(images)
 
-#a = getQuadrantArrayList(images, borders)
-#
-#print(a[0].shape)
 
+quadColorSequenceList = getQuadColorSequenceList(images, borders)
 
-tt = getUnitArrayList(images, borders)
-
-alphabet = tt[1][:8]
-
-for l in alphabet:
-    print(l)
+alphabet = getAlphabet(quadColorSequenceList[1][:8])
 
 print(' - -  ')
 
-q1 = estimateQuadrantColors(tt[0], alphabet)
-q2 = estimateQuadrantColors(tt[1], alphabet)
+Q = estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet)
+q1 = Q[0]
+q2 = Q[1]
+
 
 print(' q1 -  ')
 for q in range(len(q1)):
-    print(q1[q],tt[0][q])
+    print(q1[q])
 
+print(' q2 -  ')
 print(' - -  ')
 for q in range(len(q2)):
-    print(q2[q],tt[1][q])
+    print(q2[q])
+
+
+
+
+    #### IGNORE BOTTOM PART
 
 #img = Image.open(images[0])
 #arr = np.array(img)
 ##
 ##
-#box = get_unit_crop_coorinates(borders, v_part, h_part)
+#box = getBordersOfSubQuadrant(borders, v_part, h_part)
 #print(' - - -  ')
 #print(box[1])
 ##
@@ -249,4 +286,4 @@ for q in range(len(q2)):
 #for (top, bottom) in borders:
 #    draw.rectangle((top, bottom), fill="white")
 #
-#source_img.save('quickTest.png', "PNG")
+#source_img.save('quickTest2.png', "PNG")

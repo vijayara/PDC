@@ -162,6 +162,17 @@ def parition(border, vertical_partitions=1, horizontal_partitions=1):
     h_step = math.floor(height / horizontal_partitions)
     v_step = math.floor(width / vertical_partitions)
 
+#   residual_limit is the residual pixels if we go at the previously define steps
+#   if the residual is to high, we should take larger steps. Note that this 
+#   should depend on the partition size, so we should modify if we change n_tones.
+
+    residual_limit = 2
+    if (height - h_step * horizontal_partitions > residual_limit):
+        h_step = h_step + 1
+
+    if (width - v_step * vertical_partitions > residual_limit):
+        v_step = v_step + 1
+
     for v in range(vertical_partitions):
         for h in range(horizontal_partitions):
 
@@ -171,12 +182,13 @@ def parition(border, vertical_partitions=1, horizontal_partitions=1):
     
     return partitions
 
-# get_unit_crop_coordinates returns a list where each element
-# contains a list with the coordinates needed to crop the unites.
-def get_unit_crop_coorinates(borders, v_part, h_part):
+# getBordersOfSubQuadrant returns a list where each element
+# contains a list with the borders needed to crop the 
+# partitions inside a quadrant
+def getBordersOfSubQuadrant(borders, v_part, h_part):
 
-    unit_crop_coord = []
+    bordersOfSubQuadrant = []
     for border in borders:
-        unit_crop_coord.append(parition(border, v_part, h_part))
+        bordersOfSubQuadrant.append(parition(border, v_part, h_part))
 
-    return unit_crop_coord
+    return bordersOfSubQuadrant
