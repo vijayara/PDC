@@ -31,9 +31,9 @@ def isQ4(color):
 # croping the subscreens Q1, Q2, Q3 and Q4.
 # 
     #####################   Q1, Q2, Q3, Q4 correspond to the main screen areas
-    ###   Q1   ##   Q2   ##   
+    ###  Q1   ##  Q2   ##   
     #####################  
-    ###   Q4   ##   Q3   ##   
+    ###  Q4   ##  Q3   ##   
     #####################
 #
 # Note that testing is needed to find good thresholds that gaurantee that we
@@ -184,20 +184,19 @@ def parition(border, vertical_partitions=1, horizontal_partitions=1):
 
 # Thierry version
 def partition(border, vertical_partitions=1, horizontal_partitions=1):
-
     partitions = []
     (top, bottom) = border
     height = bottom[0] - top[0]
     width = bottom[1] - top[1]
 
-    i = top[0]
     j = top[1]
     for v in range(vertical_partitions):
+        i = top[0]
+        l = top[1] + int(round((v+1) * width / vertical_partitions))
         for h in range(horizontal_partitions):
-
             k = top[0] + int(round((h+1) * height / horizontal_partitions))
-            l = top[1] + int(round((v+1) * width / vertical_partitions))
             partitions.append(((i, j), (k, l)))
+            print(i, j, k, l)
             i = k
         j = l
     return partitions
