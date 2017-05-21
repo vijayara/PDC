@@ -3,6 +3,15 @@ from crop import*
 import numpy as np
 import os
 
+# dictionnary for mask
+noMask = 0
+maskUp = 1
+maskDown = 2
+maskLeft = 3
+maskRight = 4
+maskUpDown = 5
+maskDownUp = 6
+
 # returns the letter with the closest euclidian distance to the detected color.
 def closestColor(detected_color, alphabet):
     alphabetLength = len(alphabet)
@@ -70,3 +79,28 @@ def getAlphabet(quadColorSequence):
 
     return alphabet
 
+def sortQuadrants(quadrantList, mask):
+    sortedList = []
+    size = len(quadrantList)
+
+    if not mask:
+        size -= size%12
+        toKeep = [1, 4, 8, 11]
+        indices = [i for i in range(size) if i%12 in toKeep]
+    elif mask == maskDown or mask == maskRight:
+        size -= size%6
+        toKeep = [0, 3, 4, 5]
+        indices = [i for i in range(size) if i%6 in toKeep]
+    elif mask == maskUp or mask == left or mask == upDown:
+        size -= size%6
+        toKeep = [0, 1, 2, 4]
+        indices = [i for i in range(size) if i%6 in toKeep]
+        print(indices)
+        indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[1::4], indices[2::4], indices[3::4], indices[::4]
+    elif mask == maskDownUp:
+        size -= size%6
+        toKeep = [0, 2, 3, 4]
+        indices = [i for i in range(size) if i%6 in toKeep]
+        indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[::4], indices[2::4], indices[3::4], indices[1::4]
+    
+    return [quadrantList[i] for i in indices]

@@ -3,6 +3,7 @@ from image_decoding import*
 import os
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 
+# dictionnary for mask
 noMask = 0
 maskUp = 1
 maskDown = 2
