@@ -190,13 +190,6 @@ def partition(border, vertical_partitions=1, horizontal_partitions=1):
     height = bottom[0] - top[0]
     width = bottom[1] - top[1]
 
-    residual_limit = 2
-    if (height - h_step * horizontal_partitions > residual_limit):
-        h_step = h_step + 1
-
-    if (width - v_step * vertical_partitions > residual_limit):
-        v_step = v_step + 1
-
     i = top[0]
     j = top[1]
     for v in range(vertical_partitions):

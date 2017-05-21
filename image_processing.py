@@ -3,23 +3,40 @@ from image_decoding import*
 import os
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 
-maskUp = 'maskUp'
-maskDown = 'maskDown'
-maskLeft = 'maskLeft'
-maskRight = 'maskRight' 
-maskUpDown = 'maskUpDown'
-maskDownUp = 'maskDownUp'
-noMask = 'noMask'
+noMask = 0
+maskUp = 1
+maskDown = 2
+maskLeft = 3
+maskRight = 4
+maskUpDown = 5
+maskDownUp = 6
 
 mask = (-1, -1)
+
+
+# Parameters
+
 
 avgColorDelta = 4
 v_part, h_part = 3, 5
 
-
 # If we have 4 samples of each image, and we want to take each third one:
 timingInterpolationStart = 2 
 timingInterpolationJump = 4
+
+# Images 
+
+file_path = 'testsmay19/good1/pic'
+extension = '.png'
+start_seq = 21
+end_seq = 119
+images = []
+
+for index in range(start_seq, end_seq + 1):
+    images.append(file_path + str(index) + extension)
+
+
+# Beau code
 
 # turn border into right format for .crop method
 def flattenBorder(border):
@@ -61,6 +78,7 @@ def extractStartingScreen(images):
     colorSecondQaud = averageColor(arr2, 0)
 
     return (borders, maskCase, (colorFirstQuad, colorSecondQaud))
+
 
 # takes an image and returns the arrays corresponding to the quadrants
 def getQuadrants(border,image):
@@ -167,20 +185,11 @@ def getQuadColorSequenceList(images, borders):
         img = Image.open(image)
         arr = np.array(img)
         
-        ##  For testing cropping partitions
- #       img = Image.open('testsmay19/good1/pic29.png')
- #       source_img = img.convert("RGBA")
- #       draw = ImageDraw.Draw(source_img)
-
- #       itr = 0;
-        ##
-
         firstQuadColorSequence = []
         for (top, bottom) in bordersOfSubQuadrant[0]:
     
             mean_tone = averageColor(arr, avgColorDelta, (top, bottom))
             firstQuadColorSequence.append(mean_tone)
-            
 
 
         secondQuadColorSequence = []
@@ -189,20 +198,8 @@ def getQuadColorSequenceList(images, borders):
             mean_tone = averageColor(arr, avgColorDelta, (top, bottom))
             secondQuadColorSequence.append(mean_tone)
 
-#            if image == 'testsmay19/good1/pic29.png':
-#                print('wuut')
-#                if itr % 2 == 0:
-#                    draw.rectangle((top, bottom), fill="white")
-#                else:
-#                    draw.rectangle((top, bottom), fill="red")
-#                itr = itr + 1
-
         quadColorSequenceList.append(firstQuadColorSequence)
         quadColorSequenceList.append(secondQuadColorSequence)
-
-#        if image == 'testsmay19/good1/pic29.png':
-#            source_img.save('quickTest22.png', "PNG")
-#
 
     return quadColorSequenceList
 
@@ -222,68 +219,75 @@ def decodeImage(images):
 
 
 
+# # # CODE FOR TESTING
+
+def testCrop(file_name, borders, num=0):
+
+    img = Image.open(file_name)
+    source_img = img.convert("RGBA")
+    draw = ImageDraw.Draw(source_img)
+
+    for (top, bottom) in borders:
+        draw.rectangle((top, bottom), fill="white")
+
+    source_img.save('cropTest' + str(num) + '.png', "PNG")
+
+def partitionTest(file_name, borders, num =0):
+    img = Image.open(file_name)
+    source_img = img.convert("RGBA")
+    draw = ImageDraw.Draw(source_img)
+
+    bordersOfSubQuadrant = getBordersOfSubQuadrant(borders, v_part, h_part)
+    itr = 0
+    for (top, bottom) in bordersOfSubQuadrant[1]:
+
+        if itr % 2 == 0:
+            draw.rectangle((top, bottom), fill="white")
+        else:
+            draw.rectangle((top, bottom), fill="red")
+        itr = itr + 1
+    source_img.save('partitionTest' + str(num) + '.png', "PNG")
+
+
+
+
 # Once we have the mask and the beginning of the alphabet, get the proper sequence indexing based
 # on actualt order. Go through it to extract the alphabet, and message
   
-file_path = 'testsmay19/good1/pic'
-extension = '.png'
-start_seq = 21
-end_seq = 119
-images = []
 
-for index in range(start_seq, end_seq + 1):
-    images.append(file_path + str(index) + extension)
-
+# Get borders, mask and images
 
 (borders, maskCase, images) = getBordersMaskAndImages(images)
 
 
-quadColorSequenceList = getQuadColorSequenceList(images, borders)
+# # # Check sequencing/RGB values test
 
-alphabet = getAlphabet(quadColorSequenceList[1][:8])
-
-print(' - -  ')
-
-Q = estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet)
-q1 = Q[0]
-q2 = Q[1]
-
-
-print(' q1 -  ')
-for q in range(len(q1)):
-    print(q1[q])
-
-print(' q2 -  ')
-print(' - -  ')
-for q in range(len(q2)):
-    print(q2[q])
-
-
-
-
-    #### IGNORE BOTTOM PART
-
-#img = Image.open(images[0])
-#arr = np.array(img)
-##
-##
-#box = getBordersOfSubQuadrant(borders, v_part, h_part)
-#print(' - - -  ')
-#print(box[1])
-##
-##
-#cols = getAlphabet(arr, box[0], 8)
-#for c in cols:
-#    print(c)
-
-
+#quadColorSequenceList = getQuadColorSequenceList(images, borders)
 #
-## Croping test
-#img = Image.open('testsmay19/good1/pic22.png')
-#source_img = img.convert("RGBA")
-#draw = ImageDraw.Draw(source_img)
-##
-#for (top, bottom) in borders:
-#    draw.rectangle((top, bottom), fill="white")
+#alphabet = getAlphabet(quadColorSequenceList[1][:8])
 #
-#source_img.save('quickTest2.png', "PNG")
+#print(' - -  ')
+#
+#Q = estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet)
+#q1 = Q[0]
+#q2 = Q[1]
+#
+#
+#print(' q1 -  ')
+#for q in range(len(q1)):
+#    print(q1[q])
+#
+#print(' q2 -  ')
+#print(' - -  ')
+#for q in range(len(q2)):
+#    print(q2[q])
+
+
+
+
+# # # Crop and Partition Tests
+
+testCrop(images[0], borders, 1)
+partitionTest(images[0], borders, 1)
+
+
