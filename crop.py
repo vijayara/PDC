@@ -182,6 +182,33 @@ def parition(border, vertical_partitions=1, horizontal_partitions=1):
     
     return partitions
 
+# Thierry version
+def partition(border, vertical_partitions=1, horizontal_partitions=1):
+
+    partitions = []
+    (top, bottom) = border
+    height = bottom[0] - top[0]
+    width = bottom[1] - top[1]
+
+    residual_limit = 2
+    if (height - h_step * horizontal_partitions > residual_limit):
+        h_step = h_step + 1
+
+    if (width - v_step * vertical_partitions > residual_limit):
+        v_step = v_step + 1
+
+    i = top[0]
+    j = top[1]
+    for v in range(vertical_partitions):
+        for h in range(horizontal_partitions):
+
+            k = top[0] + int(round((h+1) * height / horizontal_partitions))
+            l = top[1] + int(round((v+1) * width / vertical_partitions))
+            partitions.append(((i, j), (k, l)))
+            i = k
+            j = l
+    return partitions
+
 # getBordersOfSubQuadrant returns a list where each element
 # contains a list with the borders needed to crop the 
 # partitions inside a quadrant
@@ -189,6 +216,6 @@ def getBordersOfSubQuadrant(borders, v_part, h_part):
 
     bordersOfSubQuadrant = []
     for border in borders:
-        bordersOfSubQuadrant.append(parition(border, v_part, h_part))
+        bordersOfSubQuadrant.append(partition(border, v_part, h_part))
 
     return bordersOfSubQuadrant
