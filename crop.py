@@ -206,7 +206,7 @@ def partition(border, vertical_partitions=1, horizontal_partitions=1):
             l = top[1] + int(round((v+1) * width / vertical_partitions))
             partitions.append(((i, j), (k, l)))
             i = k
-            j = l
+        j = l
     return partitions
 
 # getBordersOfSubQuadrant returns a list where each element
