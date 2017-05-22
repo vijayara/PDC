@@ -1,5 +1,5 @@
 from crop import*
-from image_decoding import*
+from tmp_image_decoding import*
 from tools import *
 import os
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
@@ -49,7 +49,12 @@ end_seq = 119
 images = []
 
 for index in range(start_seq, end_seq + 1):
-    images.append(file_path + str(index) + extension)
+    filename = file_path + str(index) + extension
+
+    #images.append(file_path + str(index) + extension)
+    images.append(Image.open(filename))
+
+image_PIL = []
 
     
 
