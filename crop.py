@@ -40,9 +40,6 @@ def isQ4(color):
 # our color positions are indeed the subscreens.
 def get_color_positions(arr, dim):
 
-
-
-
     locQ1, locQ2, locQ3, locQ4 = (-1, -1), (-1, -1), (-1, -1), (-1, -1)
 
     foundQ1, foundQ2, foundQ3, foundQ4 = False, False, False, False
@@ -141,48 +138,6 @@ def get_borders(arr, dim):
 
     return borders
 
-# reverses a pair, (a, b) -> (b, a)
-def reverse(pair):
-    return tuple(reversed(pair))
-
-# Paritions a screen into vertical_partitions * horizontal_partitions screens
-# it returns the set of points needed for the the partitioning.
-# note that everything is inverted vis a vis de .crop function. Hence width 
-# and height are inverted in
-def parition(border, vertical_partitions=1, horizontal_partitions=1):
-
-    if vertical_partitions==1 and horizontal_partitions==1:
-        return border
-
-    partitions = []
-    (top, bottom) = border
-    height = bottom[0] - top[0]
-    width = bottom[1] - top[1]
-
-    h_step = math.floor(height / horizontal_partitions)
-    v_step = math.floor(width / vertical_partitions)
-
-#   residual_limit is the residual pixels if we go at the previously define steps
-#   if the residual is to high, we should take larger steps. Note that this 
-#   should depend on the partition size, so we should modify if we change n_tones.
-
-    residual_limit = 2
-    if (height - h_step * horizontal_partitions > residual_limit):
-        h_step = h_step + 1
-
-    if (width - v_step * vertical_partitions > residual_limit):
-        v_step = v_step + 1
-
-    for v in range(vertical_partitions):
-        for h in range(horizontal_partitions):
-
-            i = top[0] + h * h_step
-            j = top[1] + v * v_step
-            partitions.append(((i,j), (i + h_step, j + v_step)))
-    
-    return partitions
-
-# Thierry version
 def partition(border, vertical_partitions=1, horizontal_partitions=1):
     partitions = []
     (top, bottom) = border

@@ -1,3 +1,4 @@
+from PIL import Image
 import pygame, sys
 import pygame.camera
 from pygame.locals import *
@@ -27,6 +28,7 @@ def take_shots(n_shots=20, capture_interval=1000):
     preparation = 1
     run = 1
     images = []
+    PIL_images = []
     times = []
     while preparation:
         display.blit(cam.get_image().subsurface(USABLE_RECT), (0,0))
@@ -34,9 +36,9 @@ def take_shots(n_shots=20, capture_interval=1000):
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_s:
                 pygame.time.delay(1000)# you have 1 sec to remove hands of canal
-                cam.get_image()
+                cam.get_image()# needed to refresh camera
                 pygame.time.set_timer(USEREVENT, capture_interval)
-                # take one more shot because we throw away the 1st one
+                # take one more shot because we will throw away the 1st one
                 pygame.time.set_timer(USEREVENT+1, (n_shots+1)*capture_interval+100)
                 preparation = 0
                 display.fill((0,0,0))
@@ -58,9 +60,12 @@ def take_shots(n_shots=20, capture_interval=1000):
                 pygame.quit()
     
     print("Number of images:" + str(len(images)))
-    for i in range(len(images)-1):
-        pygame.image.save(images[i+1], FILENAME+str(i+1)+'.png')
-        print("Interval", str(i)+"-"+str(i+1)+": "+str(times[i+1]-times[i]))
+    for i in range(1, len(images)):
+        string_image = pygame.image.tostring(images[i], 'RGB', False)
+        PIL_image = Image.frombytes('RGB', USABLE_RECT[2:], string_image)
+        PIL_images.append(PIL_image)
+        PIL_image.save(FILENAME+str(i)+'.png')
+        print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
     
                 
-take_shots(150, 110)
+take_shots(10, 110)
