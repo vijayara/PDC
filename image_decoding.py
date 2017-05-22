@@ -1,8 +1,7 @@
-from PIL import Image, ImageFont, ImageDraw, ImageEnhance
+from PIL import Image
 from crop import*
 from tools import*
 import numpy as np
-import os
 
 # dictionnary for mask
 noMask = 0
@@ -19,6 +18,8 @@ mask = (-1, -1)
 n_tones = 2
 alphabetLength = 8
 paddingSize = 2
+
+green_index = 2
 
 avgColorDelta = 3
 v_part, h_part = 3, 5
@@ -197,36 +198,16 @@ def findEndOfStartingSequence(images, borders, colorFirstQuad, colorSecondQaud):
 
     return itr
 
-# retuns true if every element of quadColorSequenceList is green
-def isAllGreen(quadColorSequenceList, alphabet, green_code=2):
-
-    for color in quadColorSequenceList:
-        if (closestColor(color, alphabet) != green_code):
-            return False
-
-    return True
-
-
-# Returns index of the last message in reverse
-def findEnd(quadColorSequenceList, alphabet):
-
-    endOfMessageReached = False
-
-    endIndex = len(quadColorSequenceList) - 1
-
-    index = 0
+# finds the index at which the ending sequence starts
+def findEndingIndex(colorSequence):
     
-    # find other way to loop
-    while not endOfMessageReached:
+    blocks = len(colorSequence) // quadSize # this should always be an int
 
-        if quadColorSequenceList[endIndex - index] != -1:
-        
-            if not isAllGreen(quadColorSequenceList[endIndex - index], alphabet):
-                return index
+    for b in range(blocks):
+        if all (green_index == color for color in colorSequence[b*quadSize: (b + 1)*quadSize]):
+            return b*quadSize
 
-            index = index + 1
-
-    return index
+    return -1
 
 # returns the border, maskCase as well as the image list of
 # Alphabet + padding value + Message
@@ -308,15 +289,16 @@ def decodeImage(images, alphabetLength):
     # get the alphabet
     alphabet = colorSequence[:alphabetLength]
 
-    # find the index, starting from the end at which the ending sequence starts
-    indexFromEnd = findEnd(sortedQuadColorSequenceList, alphabet) 
-
-    # remove alphabet and ending sequence
-    colorSequence = colorSequence[alphabetLength:-indexFromEnd]
-
+    # remove alphabet from sequence
+    colorSequence = colorSequence[alphabetLength:]
+    
     # transform the color sequence to a letter sequence, were a letter resides
     # in n_tone alphabet
     letterSequence = colorSequenceToLetterSequence(colorSequence, alphabet)
+
+    # remove ending sequence (find first green quad)
+    endingIndex = findEndingIndex(letterSequence)
+    letterSequence = letterSequence[:endingIndex]
 
     # get the padding length
     padding = base_change(letterSequence[:paddingSize], alphabetLength, 10)
