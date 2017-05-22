@@ -84,7 +84,7 @@ def get_color_positions(arr, dim):
 
 # is_edge detects whether c2 is in the edge, current implementation is quite
 # simple and dosen't look at the previous neighbour (i.e. c1).
-def is_edge(c1, c2, color):
+def is_edge(c1, c2, color, colorQ):
 
     threshQ1 = 170#np.array([170, 170, 170]) # Q2lue
     threshQ2 = 170#np.array([120, 160, 120]) # Green
@@ -117,7 +117,7 @@ def get_corner(arr, i, j, way, color, colorQ):
     while (not found and newI > 0):
 
         newI += way
-        if (is_edge(arr[newI][j], arr[newI + way][j], color)):
+        if (is_edge(arr[newI][j], arr[newI + way][j], color, colorQ)):
             found = True
         if (newI < 0):
             return (0, 0)
@@ -126,7 +126,7 @@ def get_corner(arr, i, j, way, color, colorQ):
     while (not found and newJ > 0):
 
         newJ += way
-        if (is_edge(arr[i][newJ], arr[i][newJ + way], color)):
+        if (is_edge(arr[i][newJ], arr[i][newJ + way], color, colorQ)):
             found = True
         if (newJ < 0):
             return (0, 0)
