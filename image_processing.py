@@ -1,6 +1,6 @@
 from crop import*
 from image_decoding import*
-from image_creation.py import base_change
+from tools import *
 import os
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 
@@ -17,12 +17,13 @@ mask = (-1, -1)
 
 
 # Parameters
-
+n_tones = 2
 alphabetLength = 8
 paddingSize = 2
 
 avgColorDelta = 3
 v_part, h_part = 3, 5
+quadSize = v_part * h_part
 
 # If we have 4 samples of each image, and we want to take each third one:
 timingInterpolationStart = 2 
@@ -154,39 +155,51 @@ def findEndOfMessage(images, borders):
         
     return index
 
-# Returns index of the last message, s.t. images[:endOfMessage] is the message
-# Index is the location of the last image
-def findEnd(quadColorSequenceList, endScreenColor):
+# retuns true if every element of quadColorSequenceList is green
+def isAllGreen(quadColorSequenceList, alphabet, green_code=2):
+
+    for color in quadColorSequenceList:
+        if (closestColor(color, alphabet) != green_code):
+            return False
+
+    return True
+
+
+# Returns index of the last message in reverse
+def findEnd(quadColorSequenceList, alphabet):
 
     endOfMessageReached = False
 
-    index = len(quadColorSequenceList) - 1
+    endIndex = len(quadColorSequenceList) - 1
+
+    index = 0
     
+    # find other way to loop
     while not endOfMessageReached:
 
-        if quadColorSequenceList[index] != -1:
+        if quadColorSequenceList[endIndex - index] != -1:
         
-            quadrantColor = sum(quadColorSequenceList[index]) / len(quadColorSequenceList[index])
+#            quadrantColor = sum(quadColorSequenceList[index]) / len(quadColorSequenceList[index])
+#
+#            if (not isSameScreen(quadrantColor, 0, endScreenColor, 0)):
+#                endOfStartingSequenceReached = True
+#                return index
 
-            if (not isSameScreen(quadrantColor, 0, endScreenColor, 0)):
-                endOfStartingSequenceReached = True
+            if not isAllGreen(quadColorSequenceList[endIndex - index], alphabet):
                 return index
 
-            index = index - 1
-            
+            index = index + 1
+
     return index
 
 # returns the border, maskCase as well as the image list of
 # Alphabet + padding value + Message
 # Need to discard green part if it is in same screen as useful quad.
-def getBordersMaskImagesAndStartingQuad(images):
+def getBordersMaskImages(images):
 
     (borders, maskCase, quadColors) = extractStartingScreen(images)
 
-    # Get starting quadrant color (which is the same as the ending one)
-    startingQaudrant = quadColors[0]
-    
-    endOfStartingSequence = findEndOfStartingSequence(images, borders, startingQaudrant, startingQaudrant)
+    endOfStartingSequence = findEndOfStartingSequence(images, borders, quadColors[0], quadColors[1])
 
     #endOfMessage = findEndOfMessage(images, borders)
     #images = images[endOfStartingSequence:endOfMessage + 1]
@@ -194,7 +207,7 @@ def getBordersMaskImagesAndStartingQuad(images):
     images = images[endOfStartingSequence:]
     images = images[timingInterpolationStart::timingInterpolationJump]
 
-    return(borders, maskCase, images, startingQaudrant)
+    return(borders, maskCase, images)
 
 # transforms a sequence of images into the corresponding quadrant array list
 # still needs to be sorted vis a vis message sequence 
@@ -239,38 +252,56 @@ def getQuadColorSequenceList(images, borders):
     return quadColorSequenceList
 
 
+# decodedImage takes an image list (file_names) and an alphabet length
+# and returns the decoded message
 def decodeImage(images, alphabetLength):
 
-    (borders, maskCase, images, startingQaudrant) = getBordersMaskImagesAndStartingQuad(images)
+    # Get borders needed to extract visible quads, the mask type (maskCase)
+    # and the images without the starting sequence. (i.e. the image set
+    # where the first screen contains the alphabet)
+    (borders, maskCase, images) = getBordersMaskImages(images)
 
-    # excluding starting sequence
+    # transform the image set into a quadrant list. (i.e. for each image we
+    # extract the 2 corresponding quadrants). Note that each quadrant is
+    # a list of RGB vectors in sequence.
     quadColorSequenceList = getQuadColorSequenceList(images, borders)
 
-    # Sort  quadColorSequenceList in function of maskCase
-    # Note that quadColorSequenceList[0] should contain the quadrant
-    # which includes the starting alphabet.
-
+    # We sort the quad list vis a vis the mask type
     sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)
 
-    endIndex = findEnd(quadColorSequenceList, startingQaudrant)
-
-    sortedQuadColorSequenceList = sortedQuadColorSequenceList[:endIndex + 1]
-
+    # We flatten the quad list into a color sequence
     colorSequence = flatten(sortedQuadColorSequenceList)
 
-    # partition the sequence
+    # get the alphabet
     alphabet = colorSequence[:alphabetLength]
 
-    colorSequence = colorSequence[alphabetLength:endIndex]
+    # find the index, starting from the end at which the ending sequence starts
+    indexFromEnd = findEnd(sortedQuadColorSequenceList, alphabet) 
 
+    # remove alphabet and ending sequence
+    colorSequence = colorSequence[alphabetLength:-indexFromEnd]
+
+    # transform the color sequence to a letter sequence, were a letter resides
+    # in n_tone alphabet
     letterSequence = colorSequenceToLetterSequence(colorSequence, alphabet)
 
+    # get the padding length
     padding = base_change(letterSequence[:paddingSize], alphabetLength, 10)
 
-    message = letterSequence[paddingSize]
+    # turn array number into int value
+    padding = int(''.join(map(str,padding)))
 
-    return message
+    # number of zeroes appended to the alphabet.
+    # Is this general enough?
+    n_zeros = abs(alphabetLength + paddingSize - quadSize)
 
+    # remove the padding length, the padding at the end, and remember to remove
+    # the zeroes appended to the alphabet
+    codedMesage = letterSequence[paddingSize + n_zeros:-padding]
+
+    # return decoded message
+    return colors_to_text(codedMesage, n_tones)
+     
 
 
 # # # CODE FOR TESTING
@@ -308,40 +339,17 @@ def partitionTest(file_name, borders, num =0):
 # Once we have the mask and the beginning of the alphabet, get the proper sequence indexing based
 # on actualt order. Go through it to extract the alphabet, and message
   
+# # # decoded message
 
-# Get borders, mask and images
+decodedMesage = decodeImage(images, alphabetLength)
 
-(borders, maskCase, images, startingQaudrant) = getBordersMaskImagesAndStartingQuad(images)
-
-
-# # # Check sequencing/RGB values test
-
-#quadColorSequenceList = getQuadColorSequenceList(images, borders)
-#
-#alphabet = getAlphabet(quadColorSequenceList[1][:8])
-#
-#print(' - -  ')
-#
-#Q = estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet)
-#q1 = Q[0]
-#q2 = Q[1]
-#
-#
-#print(' q1 -  ')
-#for q in range(len(q1)):
-#    print(q1[q])
-#
-#print(' q2 -  ')
-#print(' - -  ')
-#for q in range(len(q2)):
-#    print(q2[q])
-
+print(decodedMesage)
 
 
 
 # # # Crop and Partition Tests
 
-testCrop(images[0], borders, 1)
-partitionTest(images[0], borders, 1)
+#testCrop(images[0], borders, 1)
+#partitionTest(images[0], borders, 1)
 
 

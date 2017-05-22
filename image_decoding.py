@@ -71,7 +71,7 @@ def estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet):
     return estimatesColorSquenceList
 
 
-def colorSequenceToLetterSequence(colorSequence):
+def colorSequenceToLetterSequence(colorSequence, alphabet):
     letterSequence = []
 
     for detected_color in colorSequence:
@@ -123,5 +123,5 @@ def sortQuadrants(quadrantList, mask):
         indices = [i for i in range(size) if i%6 in toKeep]
         indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[::4], indices[2::4], indices[3::4], indices[1::4]
     
-    quadrantList += [-1]*padding
+    quadrantList += [[-1]]*padding
     return [quadrantList[i] for i in indices]

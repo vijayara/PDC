@@ -196,7 +196,6 @@ def partition(border, vertical_partitions=1, horizontal_partitions=1):
         for h in range(horizontal_partitions):
             k = top[0] + int(round((h+1) * height / horizontal_partitions))
             partitions.append(((i, j), (k, l)))
-            print(i, j, k, l)
             i = k
         j = l
     return partitions
