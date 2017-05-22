@@ -84,23 +84,35 @@ def sortQuadrants(quadrantList, mask):
     size = len(quadrantList)
 
     if not mask:
-        size -= size%12
+        rest = size%12
+        padding = 12-rest
+        size += (rest!=0)*(padding)
+        
         toKeep = [1, 4, 8, 11]
         indices = [i for i in range(size) if i%12 in toKeep]
-    elif mask == maskDown or mask == maskRight:
-        size -= size%6
+    elif mask == maskUp or mask == maskLeft:
+        rest = size%6
+        padding = 6-rest
+        size += (rest!=0)*(padding)
+        
         toKeep = [0, 3, 4, 5]
         indices = [i for i in range(size) if i%6 in toKeep]
-    elif mask == maskUp or mask == left or mask == upDown:
-        size -= size%6
+    elif mask == maskDown or mask == maskRight or mask == downUp:
+        rest = size%6
+        padding = 6-rest
+        size += (rest!=0)*(padding)
+        
         toKeep = [0, 1, 2, 4]
         indices = [i for i in range(size) if i%6 in toKeep]
-        print(indices)
         indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[1::4], indices[2::4], indices[3::4], indices[::4]
-    elif mask == maskDownUp:
-        size -= size%6
+    elif mask == maskUpDown:
+        rest = size%6
+        padding = 6-rest
+        size += (rest!=0)*(padding)
+        
         toKeep = [0, 2, 3, 4]
         indices = [i for i in range(size) if i%6 in toKeep]
         indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[::4], indices[2::4], indices[3::4], indices[1::4]
     
+    quadrantList += [-1]*padding
     return [quadrantList[i] for i in indices]
