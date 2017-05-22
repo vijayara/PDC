@@ -62,10 +62,17 @@ for index in range(start_seq, end_seq + 1):
 
 # # # Crop and Partition Tests
 
-(borders, maskCase, images) = getBordersMaskImages(images)
+
+testFile = 'night_test/lum8.png'
+
+img = Image.open(testFile)
+arr = np.array(img)
+dim = arr.shape
+
+borders = get_borders(arr, dim)
 
 
-testCrop(images[0], borders, 1)
+testCrop(testFile, borders, 1)
 #partitionTest(images[0], borders, 1)
 
 

@@ -176,8 +176,8 @@ def get_borders(arr, dim):
         if ((i, j) != (-1, -1)): 
             borders.append((get_corner(arr, i, j, -1, color), get_corner(arr, i, j, 1, color)))
 
-    if len(borders) > 2:
-        borders = getBestBorderPair(borders)
+    #if len(borders) > 2:
+    #    borders = getBestBorderPair(borders)
 
     return borders
 
