@@ -41,11 +41,7 @@ for index in range(start_seq, end_seq + 1):
     images.append(file_path + str(index) + extension)
 
 
-
-
 # Beau code
-
-flatten = lambda l: [item for sublist in l for item in sublist]
 
 # turn border into right format for .crop method
 def flattenBorder(border):
@@ -289,11 +285,10 @@ def decodeImage(images, alphabetLength):
     padding = base_change(letterSequence[:paddingSize], alphabetLength, 10)
 
     # turn array number into int value
-    padding = int(''.join(map(str,padding)))
+    padding = arrayToNumber(padding)
 
     # number of zeroes appended to the alphabet.
-    # Is this general enough?
-    n_zeros = abs(alphabetLength + paddingSize - quadSize)
+    n_zeros = quadSize - ((alphabetLength + paddingSize) % quadSize)
 
     # remove the padding length, the padding at the end, and remember to remove
     # the zeroes appended to the alphabet
@@ -344,7 +339,6 @@ def partitionTest(file_name, borders, num =0):
 decodedMesage = decodeImage(images, alphabetLength)
 
 print(decodedMesage)
-
 
 
 # # # Crop and Partition Tests

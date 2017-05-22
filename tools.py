@@ -5,6 +5,14 @@ import math
 from bitstring import BitArray
 import zlib
 
+
+# transforms a list of lists into a list
+flatten = lambda l: [item for sublist in l for item in sublist]
+
+def arrayToNumber(arr):
+    # transforms an arr into int (e.g. [1, 3] -> 13)
+    return int(''.join(map(str,arr)))
+
 def encode(string):
     #encode the text in bytes
     in_bytes = string.encode("utf-8")
