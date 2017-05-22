@@ -46,6 +46,8 @@ def get_color_positions(arr, dim):
     locQ1, locQ2, locQ3, locQ4 = (-1, -1), (-1, -1), (-1, -1), (-1, -1)
 
     foundQ1, foundQ2, foundQ3, foundQ4 = False, False, False, False
+
+    colorQ1, colorQ2, colorQ3, colorQ4 = 0, 0, 0, 0
     nbrCornersFound = 0
 
     for i in range(dim[0]):
@@ -53,28 +55,32 @@ def get_color_positions(arr, dim):
 
             if (not foundQ1) and isQ1(arr[i][j]):
                 locQ1 = (i, j)
+                colorQ1 = arr[i][j]
                 foundQ1 = True
                 nbrCornersFound+=1
 
             elif (not foundQ2) and isQ2(arr[i][j]):
                 locQ2 = (i, j)
+                colorQ2 = arr[i][j]
                 foundQ2 = True
                 nbrCornersFound+=1
             
             elif ((not foundQ3) and isQ3(arr[i][j])):
                 locQ3 = (i, j)
+                colorQ3 = arr[i][j]
                 foundQ3 = True
                 nbrCornersFound+=1
 
             elif ((not foundQ4) and isQ4(arr[i][j])):
                 locQ4 = (i, j)
+                colorQ4 = arr[i][j]
                 foundQ4 = True
                 nbrCornersFound+=1
 
             #if (nbrCornersFound >= 2):
             #    return [locQ1, locQ2, locQ3, locQ4]
             #print(foundQ1, foundQ2)
-    return [locQ1, locQ2, locQ3, locQ4]
+    return [[locQ1, locQ2, locQ3, locQ4], [colorQ1, colorQ2, colorQ3, colorQ4]]
 
 # is_edge detects whether c2 is in the edge, current implementation is quite
 # simple and dosen't look at the previous neighbour (i.e. c1).
@@ -103,7 +109,7 @@ def is_edge(c1, c2, color):
 # either exploring to the top left, or bottom right accordingly.
 # note that it returns (j, i) since using the image.crop function
 # uses this same structure.
-def get_corner(arr, i, j, way, color):   
+def get_corner(arr, i, j, way, color, colorQ):   
 
     newI, newJ = i, j
 
@@ -136,9 +142,12 @@ def get_bordersTMP(arr, dim):
     locations = get_color_positions(arr, dim) 
 
     borders = []
-    for ((i, j), color) in zip(locations, colors):
+    for itr in range(len(colors)):
+        (i, j) = locations[0][itr]
+        colorQ = locations[1][itr]
+        color = colors[itr]
         if ((i, j) != emptyQuad): 
-            borders.append((get_corner(arr, i, j, -1, color), get_corner(arr, i, j, 1, color)))
+            borders.append((get_corner(arr, i, j, -1, color, colorQ), get_corner(arr, i, j, 1, color, colorQ)))
 
     return borders
 
@@ -172,9 +181,12 @@ def get_borders(arr, dim):
         return []
 
     borders = []
-    for ((i, j), color) in zip(locations, colors):
-        if ((i, j) != (-1, -1)): 
-            borders.append((get_corner(arr, i, j, -1, color), get_corner(arr, i, j, 1, color)))
+    for itr in range(len(colors)):
+        (i, j) = locations[0][itr]
+        colorQ = locations[1][itr]
+        color = colors[itr]
+        if ((i, j) != emptyQuad): 
+            borders.append((get_corner(arr, i, j, -1, color, colorQ), get_corner(arr, i, j, 1, color, colorQ)))
 
     #if len(borders) > 2:
     #    borders = getBestBorderPair(borders)
