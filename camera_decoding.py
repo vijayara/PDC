@@ -1,19 +1,12 @@
 from PIL import Image
+from tmp_image_decoding import *
 import pygame, sys
 import pygame.camera
 from pygame.locals import *
 
-def closest_color(detected_color, n_tons):
-    delta = 256//(2*(n_tons-1))
 
-    r = ((detected_color[0]+delta)*(n_tons-1))//255
-    g = ((detected_color[1]+delta)*(n_tons-1))//255
-    b = ((detected_color[2]+delta)*(n_tons-1))//255
-    
-    color_index = r*n_tons**2 + g*n_tons + b
-    return color_index
-
-def take_shots(n_shots=20, capture_interval=1000):
+def take_shots(n_shots=20, capture_interval=1000, n_tons=2):
+    N_COLORS = n_tons**3
     pygame.init()
     pygame.camera.init()
     
@@ -66,6 +59,9 @@ def take_shots(n_shots=20, capture_interval=1000):
         PIL_images.append(PIL_image)
         PIL_image.save(FILENAME+str(i)+'.png')
         print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
+    
+    decoded_text = decodeImage(PIL_images, N_COLORS)
+    print(decoded_text)
     
                 
 take_shots(10, 110)
