@@ -136,30 +136,34 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
     particular_quadrants[3].fill(COLOR[yellow_index]) #yellow
     particular_quadrants[4].fill(COLOR[0]) #black
     
-    # create the dictionnary and padding quadrant with the colors, and the number of remaining colors after
-    max_tiles_for_padding = math.ceil(math.log(N_TILES, N_COLORS))
+    # creation of the dictionnary and padding quadrant with the colors, and the number of remaining colors after
+    
+    N_TILES_FOR_PADDING_INFO = 2
     
     # number of tiles and quadrants needed for dictionnary and padding
-    max_tiles_for_dpq = N_COLORS + max_tiles_for_padding
-    n_dictionnary_padding_quadrant = max_tiles_for_dpq // N_TILES + ((max_tiles_for_dpq%N_TILES) != 0)
+    # DPQ : Dictionary and Padding quadrant
+    N_TILES_FOR_DPQ = N_COLORS + N_TILES_FOR_PADDING_INFO
+    N_DPQ = N_TILES_FOR_DPQ // N_TILES + ((N_TILES_FOR_DPQ%N_TILES) != 0)
     
     # sequence of colors to send the number of padding colors
-    colors_for_padding = [] if remaining_colors == 0 else base_change([remaining_colors], 10, N_COLORS)
-    
-    # real number of tiles for padding in function of the message
-    n_tiles_for_padding = len(colors_for_padding)
-    n_tiles_for_dpq = N_COLORS + n_tiles_for_padding
+    colors_for_padding = [0, 0] if not remaining_colors else base_change([remaining_colors], 10, N_COLORS)
+
+    if(len(colors_for_padding) != 2):
+        if (len(colors_for_padding) == 1):
+            colors_for_padding = [0] + colors_for_padding
+        else:
+            print("error in padding colors")
     
     # sequence of colors for the dictionnary and padding
     colors_for_dictionnary_padding = list(range(N_COLORS)) + colors_for_padding
     
     # creates the dictionnary padding quadrants and fill the in black
-    dictionnary_padding_quadrants = [pygame.surface.Surface(QUADRANT_SIZE) for i in range(n_dictionnary_padding_quadrant)]
-    for i in range(n_dictionnary_padding_quadrant):
+    dictionnary_padding_quadrants = [pygame.surface.Surface(QUADRANT_SIZE) for i in range(N_DPQ)]
+    for i in range(N_DPQ):
         dictionnary_padding_quadrants[i].fill(COLOR[0])
     
     # fill the dictionnary padding quadrants with the needed colors
-    for c in range(n_tiles_for_dpq):
+    for c in range(N_TILES_FOR_DPQ):
         quadrant_index = c // N_TILES
         tile_index = c % N_TILES
         color = COLOR[colors_for_dictionnary_padding[c]]
@@ -175,7 +179,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
             message_quadrants[q].fill(color, rect)
             
     # put the dictionnary_padding as the first quadrant of the message
-    n_quadrants = n_dictionnary_padding_quadrant + n_message_quadrants
+    n_quadrants = N_DPQ + n_message_quadrants
     quadrants = dictionnary_padding_quadrants + message_quadrants
     
     # set the display to the entire screen
@@ -188,9 +192,9 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
     print("-> Colors of the message:\n", quadrants_colors)
     print("-> Verification text (reverse):\n", colors_to_text(color_message, N_TONS))
     print("-> Number of quadrants:", n_quadrants)
-    print("-> Remaining colors:", remaining_colors)
-    print("-> Number of tiles for padding:", n_tiles_for_padding)
-    print("-> Number of quadrants for dictionnary and padding:", n_dictionnary_padding_quadrant)
+    print("-> Padding:", remaining_colors)
+    print("-> Padding info:", colors_for_padding)
+    print("-> Number of quadrants for dictionnary and padding:", N_DPQ)
     # --------------------------------------------------------------------------------
 
 
@@ -215,7 +219,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
             # START with key S
             if event.type == KEYDOWN and event.key == K_s:
                 # wait 2 secs more for the  first screen
-                pygame.time.delay(int(1500 + refresh_interval*5.5))
+                pygame.time.delay(2000)
                 pygame.time.set_timer(USEREVENT, refresh_interval)
             # Loop and refresh screen
             if event.type == USEREVENT:
