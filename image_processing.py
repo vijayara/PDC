@@ -1,5 +1,6 @@
 from crop import*
 from image_decoding import*
+from image_creation.py import base_change
 import os
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 
@@ -16,8 +17,10 @@ mask = (-1, -1)
 
 # Parameters
 
+alphabetLength = 8
+paddingSize = 2
 
-avgColorDelta = 4
+avgColorDelta = 3
 v_part, h_part = 3, 5
 
 # If we have 4 samples of each image, and we want to take each third one:
@@ -36,7 +39,11 @@ for index in range(start_seq, end_seq + 1):
     images.append(file_path + str(index) + extension)
 
 
+
+
 # Beau code
+
+flatten = lambda l: [item for sublist in l for item in sublist]
 
 # turn border into right format for .crop method
 def flattenBorder(border):
@@ -74,8 +81,8 @@ def extractStartingScreen(images):
     borders = get_borders(arr, dim)
 
     (arr1, arr2) = getQuadrants(borders, images[0])
-    colorFirstQuad = averageColor(arr1, 0)
-    colorSecondQaud = averageColor(arr2, 0)
+    colorFirstQuad = averageColor(arr1, avgColorDelta)
+    colorSecondQaud = averageColor(arr2, avgColorDelta)
 
     return (borders, maskCase, (colorFirstQuad, colorSecondQaud))
 
@@ -108,8 +115,8 @@ def findEndOfStartingSequence(images, borders, colorFirstQuad, colorSecondQaud):
     while not endOfStartingSequenceReached:
         
         (arr1, arr2) = getQuadrants(borders, images[itr])
-        c1 = averageColor(arr1, 0)
-        c2 = averageColor(arr2, 0)
+        c1 = averageColor(arr1, avgColorDelta)
+        c2 = averageColor(arr2, avgColorDelta)
 
         if (not isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud)):
             endOfStartingSequenceReached = True
@@ -128,16 +135,16 @@ def findEndOfMessage(images, borders):
     index = len(images) - 1
 
     (arr1, arr2) = getQuadrants(borders, images[index])
-    colorFirstQuad = averageColor(arr1, 0)
-    colorSecondQaud = averageColor(arr2, 0)
+    colorFirstQuad = averageColor(arr1, avgColorDelta)
+    colorSecondQaud = averageColor(arr2, avgColorDelta)
     
     while not endOfMessageReached:
         
         index = index - 1
 
         (arr1, arr2) = getQuadrants(borders, images[index])
-        c1 = averageColor(arr1, 0)
-        c2 = averageColor(arr2, 0)
+        c1 = averageColor(arr1, avgColorDelta)
+        c2 = averageColor(arr2, avgColorDelta)
 
         if (not isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud)):
             endOfStartingSequenceReached = True
@@ -146,20 +153,47 @@ def findEndOfMessage(images, borders):
         
     return index
 
+# Returns index of the last message, s.t. images[:endOfMessage] is the message
+# Index is the location of the last image
+def findEnd(quadColorSequenceList, endScreenColor):
+
+    endOfMessageReached = False
+
+    index = len(quadColorSequenceList) - 1
+    
+    while not endOfMessageReached:
+
+        if quadColorSequenceList[index] != -1:
+        
+            quadrantColor = sum(quadColorSequenceList[index]) / len(quadColorSequenceList[index])
+
+            if (not isSameScreen(quadrantColor, 0, endScreenColor, 0)):
+                endOfStartingSequenceReached = True
+                return index
+
+            index = index - 1
+            
+    return index
+
 # returns the border, maskCase as well as the image list of
 # Alphabet + padding value + Message
 # Need to discard green part if it is in same screen as useful quad.
-def getBordersMaskAndImages(images):
+def getBordersMaskImagesAndStartingQuad(images):
 
     (borders, maskCase, quadColors) = extractStartingScreen(images)
-    
-    endOfStartingSequence = findEndOfStartingSequence(images, borders, quadColors[0], quadColors[1])
-    endOfMessage = findEndOfMessage(images, borders)
 
-    images = images[endOfStartingSequence:endOfMessage + 1]
+    # Get starting quadrant color (which is the same as the ending one)
+    startingQaudrant = quadColors[0]
+    
+    endOfStartingSequence = findEndOfStartingSequence(images, borders, startingQaudrant, startingQaudrant)
+
+    #endOfMessage = findEndOfMessage(images, borders)
+    #images = images[endOfStartingSequence:endOfMessage + 1]
+
+    images = images[endOfStartingSequence:]
     images = images[timingInterpolationStart::timingInterpolationJump]
 
-    return(borders, maskCase, images)
+    return(borders, maskCase, images, startingQaudrant)
 
 # transforms a sequence of images into the corresponding quadrant array list
 # still needs to be sorted vis a vis message sequence 
@@ -204,18 +238,37 @@ def getQuadColorSequenceList(images, borders):
     return quadColorSequenceList
 
 
-def decodeImage(images):
-    (borders, maskCase, images) = getBordersMaskAndImages(images)
+def decodeImage(images, alphabetLength):
 
+    (borders, maskCase, images, startingQaudrant) = getBordersMaskImagesAndStartingQuad(images)
+
+    # excluding starting sequence
     quadColorSequenceList = getQuadColorSequenceList(images, borders)
 
     # Sort  quadColorSequenceList in function of maskCase
     # Note that quadColorSequenceList[0] should contain the quadrant
     # which includes the starting alphabet.
 
-    alphabet = getAlphabet(quadColorSequenceList[1][:8])
+    sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)
 
-    Q = estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet)
+    endIndex = findEnd(quadColorSequenceList, startingQaudrant)
+
+    sortedQuadColorSequenceList = sortedQuadColorSequenceList[:endIndex + 1]
+
+    colorSequence = flatten(sortedQuadColorSequenceList)
+
+    # partition the sequence
+    alphabet = colorSequence[:alphabetLength]
+
+    colorSequence = colorSequence[alphabetLength:endIndex]
+
+    letterSequence = colorSequenceToLetterSequence(colorSequence, alphabet)
+
+    padding = base_change(letterSequence[:paddingSize], alphabetLength, 10)
+
+    message = letterSequence[paddingSize]
+
+    return message
 
 
 
@@ -257,7 +310,7 @@ def partitionTest(file_name, borders, num =0):
 
 # Get borders, mask and images
 
-(borders, maskCase, images) = getBordersMaskAndImages(images)
+(borders, maskCase, images, startingQaudrant) = getBordersMaskImagesAndStartingQuad(images)
 
 
 # # # Check sequencing/RGB values test

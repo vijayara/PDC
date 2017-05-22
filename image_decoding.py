@@ -62,6 +62,15 @@ def estimateLettersFromQuadrantColorList(quadColorSequenceList, alphabet):
     return estimatesColorSquenceList
 
 
+def colorSequenceToLetterSequence(colorSequence):
+    letterSequence = []
+
+    for detected_color in colorSequence:
+        letterSequence.append(closestColor(detected_color, alphabet))
+
+    return letterSequence
+
+
 # Take a quadColorSequence corresponding to the alphabet
 def getAlphabet(quadColorSequence):
     alphabet = []
