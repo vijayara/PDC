@@ -215,7 +215,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
             # START with key S
             if event.type == KEYDOWN and event.key == K_s:
                 # wait 2 secs more for the  first screen
-                pygame.time.delay(int(1500 + refresh_interval*5.5))
+                pygame.time.delay(2000)
                 pygame.time.set_timer(USEREVENT, refresh_interval)
             # Loop and refresh screen
             if event.type == USEREVENT:
