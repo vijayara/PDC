@@ -151,6 +151,7 @@ def extractStartingScreen(images):
 
     maskCase = getMask(get_color_positions(arr, dim))
     borders = get_borders(arr, dim)
+    print(borders)
 
     (arr1, arr2) = getQuadrants(borders, images[0])
     colorFirstQuad = averageColor(arr1, avgColorDelta)

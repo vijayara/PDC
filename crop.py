@@ -2,6 +2,9 @@ from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 import math
 import numpy as np
 
+idealRatio = 1280 / 720
+
+emptyQuad = (-1, -1)
 
 #threshQ1 = np.array([170, 170, 253]) # Blue
 #threshQ2 = np.array([120, 160, 120]) # Green
@@ -128,15 +131,56 @@ def get_corner(arr, i, j, way, color):
 # get_borders returns all the pairs (top, bottom) for all the colors that it
 # can find, where top and bottom are the respective top left and bottom right
 # corners which can be used to crop said color screen partitions.
+def get_bordersTMP(arr, dim):
+    colors = ['Q1', 'Q2', 'Q3', 'Q4']
+    locations = get_color_positions(arr, dim) 
+
+    borders = []
+    for ((i, j), color) in zip(locations, colors):
+        if ((i, j) != emptyQuad): 
+            borders.append((get_corner(arr, i, j, -1, color), get_corner(arr, i, j, 1, color)))
+
+    return borders
+
+# 
+
+def getBestBorderPair(borders):
+
+    index = 0
+    print(idealRatio)
+    ratios = []
+    for (top, bottom) in borders:
+        ratio = (bottom[0] - top[0]) / (bottom[1] - top[1])
+        print(ratio)
+        ratios.append(abs(ratio - idealRatio))
+    
+    borderChoices = [b for b in range(len(borders))]
+    bestChoices = [x for (y,x) in sorted(zip(ratios,borderChoices))]
+    print(bestChoices)
+    return [borders[bestChoices[0]], borders[bestChoices[1]]]
+    
+
+
+
 def get_borders(arr, dim):
     colors = ['Q1', 'Q2', 'Q3', 'Q4']
     locations = get_color_positions(arr, dim) 
+
+    nb_quad = 4 - sum([emptyQuad == quad for quad in locations])
+    print(nb_quad)
+    if nb_quad < 2:
+        return []
+
     borders = []
     for ((i, j), color) in zip(locations, colors):
         if ((i, j) != (-1, -1)): 
             borders.append((get_corner(arr, i, j, -1, color), get_corner(arr, i, j, 1, color)))
 
+    if len(borders) > 2:
+        borders = getBestBorderPair(borders)
+
     return borders
+
 
 def partition(border, vertical_partitions=1, horizontal_partitions=1):
     partitions = []
