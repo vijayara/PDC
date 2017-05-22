@@ -135,8 +135,6 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
     ###############################
     ###############################
     
-    initial_time = pygame.time.get_ticks()
-    next_action_time = initial_time + 1000*5 # 5 sec
     run = True
     current_quadrant = 0
     pygame.display.flip()
@@ -144,8 +142,8 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
         for event in pygame.event.get():
             # START with key S
             if event.type == KEYDOWN and event.key == K_s:
-                # wait 2 secs more for the  first screen
-                pygame.time.delay(2000)
+                # wait 3 secs more for the  first screen (to go to start decoder and remove your hands)
+                pygame.time.delay(3000)
                 pygame.time.set_timer(USEREVENT, refresh_interval)
             # Loop and refresh screen
             if event.type == USEREVENT:
