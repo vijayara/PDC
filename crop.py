@@ -7,7 +7,7 @@ idealRatio = 1280 / 720
 
 emptyQuad = (-1, -1)
 
-threshQ1 = np.array([40, 150, 230]) # Blue
+threshQ1 = np.array([50, 150, 230]) # Blue
 threshQ2 = np.array([100, 180, 130]) # Green
 threshQ3 = np.array([170, 40, 40]) # Red 
 threshQ4 = np.array([155, 175, 120]) # Yellow
@@ -113,13 +113,13 @@ def get_corner(arr, i, j, way, color, colorQ):
     newI, newJ = i, j
 
     found, itr = False, 0
-    while (not found and newI > 0 and newI < height):
+    while (not found and newI > 0 and newI < height-1):
         newI += way
         if (is_edge(arr[newI][j], color, colorQ)):
             found = True
 
     found, itr = False, 0
-    while (not found and newJ > 0 and newJ < width):
+    while (not found and newJ > 0 and newJ < width-1):
         newJ += way
         if (is_edge(arr[i][newJ], color, colorQ)):
             found = True
