@@ -55,24 +55,24 @@ for index in range(start_seq, end_seq + 1):
     #images.append(Image.open(filename))
  
 
-#decodedMesage = decodeImage(images, alphabetLength)
+decodedMesage = decodeImage(images, alphabetLength)
 #
-#print(decodedMesage)
+print(decodedMesage)
 
 
 # # # Crop and Partition Tests
 
 
-testFile = 'night_test/lum5.png'
-
-img = Image.open(testFile)
-arr = np.array(img)
-dim = arr.shape
-
-borders = get_borders(arr, dim)
-
-
-testCrop(testFile, borders, 1)
+#testFile = 'night_test/lum5.png'
+#
+#img = Image.open(testFile)
+#arr = np.array(img)
+#dim = arr.shape
+#
+#borders = get_borders(arr, dim)
+#
+#
+#testCrop(testFile, borders, 1)
 #partitionTest(images[0], borders, 1)
 
 

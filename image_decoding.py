@@ -114,7 +114,8 @@ def sortQuadrants(quadrantList, mask):
         indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[::4], indices[2::4], indices[3::4], indices[1::4]
     
     quadrantList += [[-1]]*padding
-    return [quadrantList[i] for i in indices]
+    sortedQuadrantList = [quadrantList[i] for i in indices]
+    return sortedQuadrantList[:-padding]
 
 
 # turn border into right format for .crop method
@@ -151,7 +152,6 @@ def extractStartingScreen(images):
 
     maskCase = getMask(get_color_positions(arr, dim)[0])
     borders = get_borders(arr, dim)
-    print(borders)
 
     (arr1, arr2) = getQuadrants(borders, images[0])
     colorFirstQuad = averageColor(arr1, avgColorDelta)
@@ -199,9 +199,12 @@ def findEndOfStartingSequence(images, borders, colorFirstQuad, colorSecondQaud):
 def findEndingIndex(colorSequence):
     
     blocks = len(colorSequence) // quadSize # this should always be an int
+    print(len(colorSequence))
+    print(blocks)
 
     for b in range(blocks):
         if all (green_index == color for color in colorSequence[b*quadSize: (b + 1)*quadSize]):
+            print[colorSequence[b*quadSize: (b + 1)*quadSize]]
             return b*quadSize
 
     return -1
@@ -279,7 +282,7 @@ def decodeImage(images, alphabetLength):
 
     # We sort the quad list vis a vis the mask type
     sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)
-
+    
     # We flatten the quad list into a color sequence
     colorSequence = flatten(sortedQuadColorSequenceList)
 
@@ -292,11 +295,11 @@ def decodeImage(images, alphabetLength):
     # transform the color sequence to a letter sequence, were a letter resides
     # in n_tone alphabet
     letterSequence = colorSequenceToLetterSequence(colorSequence, alphabet)
-
+    
     # remove ending sequence (find first green quad)
     endingIndex = findEndingIndex(letterSequence)
+    print(endingIndex)
     letterSequence = letterSequence[:endingIndex]
-
     # get the padding length
     padding = base_change(letterSequence[:paddingSize], alphabetLength, 10)
 
@@ -309,6 +312,7 @@ def decodeImage(images, alphabetLength):
     # remove the padding length, the padding at the end, and remember to remove
     # the zeroes appended to the alphabet
     codedMesage = letterSequence[paddingSize + n_zeros:-padding]
+
 
     # return decoded message
     return colors_to_text(codedMesage, n_tones)
