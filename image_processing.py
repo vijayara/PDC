@@ -52,7 +52,6 @@ for index in range(start_seq, end_seq + 1):
     filename = file_path + str(index) + extension
 
     images.append(file_path + str(index) + extension)
-    #images.append(Image.open(filename))
  
 
 decodedMesage = decodeImage(images, alphabetLength)
