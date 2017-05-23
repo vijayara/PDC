@@ -141,17 +141,16 @@ def getMaskFromInfo(maskInfo):
         return noMask
 
 # returns the mask type as well as the corners associated.
-def extractStartingScreen(images):
+def extractStartingScreen(image):
 
-    img = Image.open(images[0])
-    arr = np.array(img)
+    arr = np.array(image)
     dim = arr.shape
 
     (borders, maskInfo) = get_borders(arr, dim)
 
     maskCase = getMaskFromInfo(maskInfo)
 
-    (arr1, arr2) = getQuadrants(borders, images[0])
+    (arr1, arr2) = getQuadrants(borders, image)
     colorFirstQuad = averageColor(arr1, avgColorDelta)
     colorSecondQaud = averageColor(arr2, avgColorDelta)
 
@@ -160,9 +159,8 @@ def extractStartingScreen(images):
 
 # takes an image and returns the arrays corresponding to the quadrants
 def getQuadrants(border,image):
-    img = Image.open(image)
-    arr1 = np.array(img.crop(flattenBorder(border[0])))
-    arr2 = np.array(img.crop(flattenBorder(border[1])))
+    arr1 = np.array(image.crop(flattenBorder(border[0])))
+    arr2 = np.array(image.crop(flattenBorder(border[1])))
     return (arr1, arr2)
 
 # returns true if the colors passed (c1, and c2) correspon to the 
@@ -209,7 +207,7 @@ def findEndingIndex(colorSequence):
 # Need to discard green part if it is in same screen as useful quad.
 def getBordersMaskImages(images):
 
-    (borders, maskCase, quadColors) = extractStartingScreen(images)
+    (borders, maskCase, quadColors) = extractStartingScreen(images[0])
 
     endOfStartingSequence = findEndOfStartingSequence(images, borders, quadColors[0], quadColors[1])
 
@@ -239,8 +237,7 @@ def getQuadColorSequenceList(images, borders):
     bordersOfSubQuadrant = getBordersOfSubQuadrant(borders, v_part, h_part)
     
     for image in images:
-        img = Image.open(image)
-        arr = np.array(img)
+        arr = np.array(image)
         
         firstQuadColorSequence = []
         for (top, bottom) in bordersOfSubQuadrant[0]:
@@ -305,10 +302,12 @@ def decodeImage(images, alphabetLength):
     # remove ending sequence (find first green quad)
     endingIndex = findEndingIndex(letterSequence)
 
+    # remove ending screen (green)
     letterSequence = letterSequence[:endingIndex]
-
    
+    # remove padding sequence at the end (black)
     codedMesage = letterSequence[:-padding]
    
     # return decoded message
     return colors_to_text(codedMesage, n_tones)
+

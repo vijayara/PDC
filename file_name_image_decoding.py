@@ -29,8 +29,6 @@ quadSize = v_part * h_part
 timingInterpolationStart = 2 
 timingInterpolationJump = 4
 
-
-
 # returns the letter with the closest euclidian distance to the detected color.
 def closestColor(detected_color, alphabet):
     alphabetLength = len(alphabet)
@@ -114,7 +112,8 @@ def sortQuadrants(quadrantList, mask):
         indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[::4], indices[2::4], indices[3::4], indices[1::4]
     
     quadrantList += [[-1]]*padding
-    return [quadrantList[i] for i in indices]
+    sortedQuadrantList = [quadrantList[i] for i in indices]
+    return sortedQuadrantList[:-padding]
 
 
 # turn border into right format for .crop method
@@ -123,21 +122,20 @@ def flattenBorder(border):
     return (top[0], top[1], bottom[0], bottom[1])
 
 # Get mask returns the mask type based on the location list (see crop)
-def getMask(location_list):
+def getMaskFromInfo(maskInfo):
 
-    [locUL, locUR, locDL, locDR] = location_list
-
-    if locUL == mask and locUR == mask:
+    (i1, i2) = maskInfo
+    if i1 == 2 and i2 == 3:
         return maskUp
-    elif locDL == mask and locDR == mask:
+    elif i1 == 0 and i2 == 1:
         return maskDown
-    elif locUL == mask and locDL == mask:
+    elif i1 == 1 and i2 == 3:
         return maskLeft
-    elif locUR == mask and locDR == mask:
+    elif i1 == 0 and i2 == 2:
         return maskRight
-    elif locUL == mask and locDR == mask:
+    elif i1 == 1 and i2 == 2:
         return maskUpDown
-    elif locDL == mask and locUR == mask:
+    elif i1 == 0 and i2 == 3:
         return maskDownUp
     else:
         return noMask
@@ -145,11 +143,13 @@ def getMask(location_list):
 # returns the mask type as well as the corners associated.
 def extractStartingScreen(images):
 
-    arr = np.array(images[0])
+    img = Image.open(images[0])
+    arr = np.array(img)
     dim = arr.shape
 
-    maskCase = getMask(get_color_positions(arr, dim))
-    borders = get_borders(arr, dim)
+    (borders, maskInfo) = get_borders(arr, dim)
+
+    maskCase = getMaskFromInfo(maskInfo)
 
     (arr1, arr2) = getQuadrants(borders, images[0])
     colorFirstQuad = averageColor(arr1, avgColorDelta)
@@ -160,13 +160,10 @@ def extractStartingScreen(images):
 
 # takes an image and returns the arrays corresponding to the quadrants
 def getQuadrants(border,image):
-    arr1 = np.array(image.crop(flattenBorder(border[0])))
-    arr2 = np.array(image.crop(flattenBorder(border[1])))
+    img = Image.open(image)
+    arr1 = np.array(img.crop(flattenBorder(border[0])))
+    arr2 = np.array(img.crop(flattenBorder(border[1])))
     return (arr1, arr2)
-
-# Euclidian distance between vector c1 and c2
-def distance(c1, c2):
-    return np.linalg.norm(c1 - c2) 
 
 # returns true if the colors passed (c1, and c2) correspon to the 
 # starting screen colors 
@@ -242,7 +239,8 @@ def getQuadColorSequenceList(images, borders):
     bordersOfSubQuadrant = getBordersOfSubQuadrant(borders, v_part, h_part)
     
     for image in images:
-        arr = np.array(image)
+        img = Image.open(image)
+        arr = np.array(img)
         
         firstQuadColorSequence = []
         for (top, bottom) in bordersOfSubQuadrant[0]:
@@ -278,11 +276,11 @@ def decodeImage(images, alphabetLength):
     quadColorSequenceList = getQuadColorSequenceList(images, borders)
 
     # We sort the quad list vis a vis the mask type
-    sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)
-
+    sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskDown)#maskCase)
+    
     # We flatten the quad list into a color sequence
     colorSequence = flatten(sortedQuadColorSequenceList)
-
+    
     # get the alphabet
     alphabet = colorSequence[:alphabetLength]
 
@@ -293,22 +291,25 @@ def decodeImage(images, alphabetLength):
     # in n_tone alphabet
     letterSequence = colorSequenceToLetterSequence(colorSequence, alphabet)
 
-    # remove ending sequence (find first green quad)
-    endingIndex = findEndingIndex(letterSequence)
-    letterSequence = letterSequence[:endingIndex]
-
     # get the padding length
     padding = base_change(letterSequence[:paddingSize], alphabetLength, 10)
 
     # turn array number into int value
     padding = arrayToNumber(padding)
 
-    # number of zeroes appended to the alphabet.
+     # number of zeroes appended to the alphabet.
     n_zeros = quadSize - ((alphabetLength + paddingSize) % quadSize)
 
-    # remove the padding length, the padding at the end, and remember to remove
-    # the zeroes appended to the alphabet
-    codedMesage = letterSequence[paddingSize + n_zeros:-padding]
+    letterSequence = letterSequence[paddingSize + n_zeros:]
+    
+    # remove ending sequence (find first green quad)
+    endingIndex = findEndingIndex(letterSequence)
 
+    # remove ending screen (green)
+    letterSequence = letterSequence[:endingIndex]
+   
+    # remove padding sequence at the end (black)
+    codedMesage = letterSequence[:-padding]
+   
     # return decoded message
     return colors_to_text(codedMesage, n_tones)
