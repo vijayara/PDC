@@ -52,7 +52,6 @@ for index in range(start_seq, end_seq + 1):
     filename = file_path + str(index) + extension
 
     images.append(file_path + str(index) + extension)
-    #images.append(Image.open(filename))
  
 
 #decodedMesage = decodeImage(images, alphabetLength)
@@ -63,7 +62,7 @@ for index in range(start_seq, end_seq + 1):
 # # # Crop and Partition Tests
 
 
-testFile = 'night_test/lum5.png'
+testFile = 'testsmay19/good1/pic21.png'
 
 img = Image.open(testFile)
 arr = np.array(img)

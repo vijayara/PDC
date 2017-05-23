@@ -139,8 +139,8 @@ def getMask(location_list):
         return maskUpDown
     elif locDL == mask and locUR == mask:
         return maskDownUp
-
-    return noMask
+    else:
+        return noMask
 
 # returns the mask type as well as the corners associated.
 def extractStartingScreen(images):
@@ -149,7 +149,7 @@ def extractStartingScreen(images):
     arr = np.array(img)
     dim = arr.shape
 
-    maskCase = getMask(get_color_positions(arr, dim))
+    maskCase = getMask(get_color_positions(arr, dim)[0])
     borders = get_borders(arr, dim)
     print(borders)
 
