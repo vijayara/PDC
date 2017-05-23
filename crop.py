@@ -73,9 +73,6 @@ def get_color_positions(arr, dim):
                 foundQ4 = True
                 nbrCornersFound+=1
 
-            #if (nbrCornersFound >= 2):
-            #    return [locQ1, locQ2, locQ3, locQ4]
-            #print(foundQ1, foundQ2)
     return [[locQ1, locQ2, locQ3, locQ4], [colorQ1, colorQ2, colorQ3, colorQ4]]
 
 
@@ -129,7 +126,7 @@ def get_corner(arr, i, j, way, color, colorQ):
 # get_borders returns all the pairs (top, bottom) for all the colors that it
 # can find, where top and bottom are the respective top left and bottom right
 # corners which can be used to crop said color screen partitions.
-def get_bordersTMP(arr, dim):
+def getAllBorders(arr, dim):
     colors = ['Q1', 'Q2', 'Q3', 'Q4']
     locations = get_color_positions(arr, dim) 
 
@@ -144,45 +141,47 @@ def get_bordersTMP(arr, dim):
     return borders
 
 
-def getBestBorderPair(borders):
+def getBestBorderPair(borders, quadIndex):
 
     index = 0
-    print(idealRatio)
     ratios = []
     for (top, bottom) in borders:
         ratio = (bottom[0] - top[0]) / (bottom[1] - top[1])
-        print(ratio)
         ratios.append(abs(ratio - idealRatio))
     
     borderChoices = [b for b in range(len(borders))]
     bestChoices = [x for (y,x) in sorted(zip(ratios,borderChoices))]
-    print(bestChoices)
-    return [borders[bestChoices[0]], borders[bestChoices[1]]]
-    
+    chosenQuads = sorted((quadIndex[bestChoices[0]], quadIndex[bestChoices[1]]))
+
+    if (quadIndex[bestChoices[0]] < quadIndex[bestChoices[1]]):
+        return ([borders[bestChoices[0]], borders[bestChoices[1]]], chosenQuads)
+    else:
+        return ([borders[bestChoices[1]], borders[bestChoices[0]]], chosenQuads)
 
 
 
 def get_borders(arr, dim):
     colors = ['Q1', 'Q2', 'Q3', 'Q4']
     locations = get_color_positions(arr, dim) 
-
+    chosenQuads = -1
     nb_quad = 4 - sum([emptyQuad == quad for quad in locations])
-    print(nb_quad)
     if nb_quad < 2:
         return []
 
     borders = []
+    quadIndex = []
     for itr in range(len(colors)):
         (i, j) = locations[0][itr]
         colorQ = locations[1][itr]
         color = colors[itr]
         if ((i, j) != emptyQuad): 
             borders.append((get_corner(arr, i, j, -1, color, colorQ), get_corner(arr, i, j, 1, color, colorQ)))
+            quadIndex.append(itr)
 
-    #if len(borders) > 2:
-    #    borders = getBestBorderPair(borders)
 
-    return borders
+    (borders, chosenQuads) = getBestBorderPair(borders, quadIndex)
+
+    return (borders, chosenQuads)
 
 
 def partition(border, vertical_partitions=1, horizontal_partitions=1):

@@ -25,7 +25,7 @@ def partitionTest(file_name, borders, num =0):
 
     bordersOfSubQuadrant = getBordersOfSubQuadrant(borders, v_part, h_part)
     itr = 0
-    for (top, bottom) in bordersOfSubQuadrant[1]:
+    for (top, bottom) in bordersOfSubQuadrant[0]:
 
         if itr % 2 == 0:
             draw.rectangle((top, bottom), fill="white")
@@ -54,24 +54,29 @@ for index in range(start_seq, end_seq + 1):
     images.append(file_path + str(index) + extension)
  
 
-decodedMesage = decodeImage(images, alphabetLength)
-#
-print(decodedMesage)
+
+
+
+
+#decodedMesage = decodeImage(images, alphabetLength)
+#print(decodedMesage)
 
 
 # # # Crop and Partition Tests
 
 
 #testFile = 'night_test/lum5.png'
+testFile= images[0]
+
+img = Image.open(testFile)
+arr = np.array(img)
+dim = arr.shape
 #
-#img = Image.open(testFile)
-#arr = np.array(img)
-#dim = arr.shape
-#
-#borders = get_borders(arr, dim)
+borders = getAllBorders(arr, dim)
+
 #
 #
-#testCrop(testFile, borders, 1)
+testCrop(testFile, borders, 1)
 #partitionTest(images[0], borders, 1)
 
 

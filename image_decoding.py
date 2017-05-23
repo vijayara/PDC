@@ -29,8 +29,6 @@ quadSize = v_part * h_part
 timingInterpolationStart = 2 
 timingInterpolationJump = 4
 
-
-
 # returns the letter with the closest euclidian distance to the detected color.
 def closestColor(detected_color, alphabet):
     alphabetLength = len(alphabet)
@@ -124,21 +122,20 @@ def flattenBorder(border):
     return (top[0], top[1], bottom[0], bottom[1])
 
 # Get mask returns the mask type based on the location list (see crop)
-def getMask(location_list):
+def getMaskFromInfo(maskInfo):
 
-    [locUL, locUR, locDL, locDR] = location_list
-
-    if locUL == mask and locUR == mask:
+    (i1, i2) = maskInfo
+    if i1 == 2 and i2 == 3:
         return maskUp
-    elif locDL == mask and locDR == mask:
+    elif i1 == 0 and i2 == 1:
         return maskDown
-    elif locUL == mask and locDL == mask:
+    elif i1 == 1 and i2 == 3:
         return maskLeft
-    elif locUR == mask and locDR == mask:
+    elif i1 == 0 and i2 == 2:
         return maskRight
-    elif locUL == mask and locDR == mask:
+    elif i1 == 1 and i2 == 2:
         return maskUpDown
-    elif locDL == mask and locUR == mask:
+    elif i1 == 0 and i2 == 3:
         return maskDownUp
     else:
         return noMask
@@ -150,8 +147,9 @@ def extractStartingScreen(images):
     arr = np.array(img)
     dim = arr.shape
 
-    maskCase = getMask(get_color_positions(arr, dim)[0])
-    borders = get_borders(arr, dim)
+    (borders, maskInfo) = get_borders(arr, dim)
+
+    maskCase = getMaskFromInfo(maskInfo)
 
     (arr1, arr2) = getQuadrants(borders, images[0])
     colorFirstQuad = averageColor(arr1, avgColorDelta)
@@ -278,11 +276,11 @@ def decodeImage(images, alphabetLength):
     quadColorSequenceList = getQuadColorSequenceList(images, borders)
 
     # We sort the quad list vis a vis the mask type
-    sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)
+    sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskDown)#maskCase)
     
     # We flatten the quad list into a color sequence
     colorSequence = flatten(sortedQuadColorSequenceList)
-
+    
     # get the alphabet
     alphabet = colorSequence[:alphabetLength]
 
@@ -308,9 +306,9 @@ def decodeImage(images, alphabetLength):
     endingIndex = findEndingIndex(letterSequence)
 
     letterSequence = letterSequence[:endingIndex]
+
    
     codedMesage = letterSequence[:-padding]
    
-
     # return decoded message
     return colors_to_text(codedMesage, n_tones)
