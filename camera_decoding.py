@@ -5,7 +5,7 @@ import pygame.camera
 from pygame.locals import *
 
 
-def take_shots(n_shots=20, capture_interval=1000, n_tons=2):
+def take_shots(capture_interval=1000, n_tons=2):
     N_COLORS = n_tons**3
     pygame.init()
     pygame.camera.init()
@@ -58,8 +58,8 @@ def take_shots(n_shots=20, capture_interval=1000, n_tons=2):
         PIL_image.save(FILENAME+str(i)+'.png')
         print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
     
-    decoded_text = decodeImage(PIL_images, N_COLORS)
-    print(decoded_text)
+    #decoded_text = decodeImage(PIL_images, N_COLORS)
+    #print(decoded_text)
     
                 
-take_shots(10, 110)
+take_shots(110)
