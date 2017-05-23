@@ -149,7 +149,7 @@ def extractStartingScreen(images):
     arr = np.array(img)
     dim = arr.shape
 
-    maskCase = getMask(get_color_positions(arr, dim))
+    maskCase = getMask(get_color_positions(arr, dim)[0])
     borders = get_borders(arr, dim)
     print(borders)
 
