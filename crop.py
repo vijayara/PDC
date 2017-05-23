@@ -81,7 +81,7 @@ def is_edge(color, quadrant, color_source):
     threshQ1 = color_source[2]-40
     threshQ2 = color_source[1]-15
     threshQ3 = color_source[0]-25
-    threshQ4 = int(color_source[0])+int(color_source[1])-28
+    threshQ4 = int(color_source[0])+int(color_source[1])-40#28
 
     if (quadrant == 'Q1'):
         return color[2] < threshQ1

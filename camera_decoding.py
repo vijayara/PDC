@@ -1,5 +1,5 @@
 from PIL import Image
-from tmp_image_decoding import *
+from image_decoding import *
 import pygame, sys
 import pygame.camera
 from pygame.locals import *
@@ -8,6 +8,7 @@ from pygame.locals import *
 def take_shots(capture_interval=1000, n_tons=2):
     N_COLORS = n_tons**3
     pygame.init()
+    pygame.mouse.set_visible(False)
     pygame.camera.init()
     
     RESOLUTION = (1280, 720)
@@ -20,6 +21,8 @@ def take_shots(capture_interval=1000, n_tons=2):
     
     preparation = 1
     run = 1
+    grand_final = 1
+
     images = []
     PIL_images = []
     times = []
@@ -48,18 +51,43 @@ def take_shots(capture_interval=1000, n_tons=2):
             if (event.type == KEYDOWN):
                 run = 0
                 cam.stop()
-                pygame.quit()
     
+
     print("Number of images:" + str(len(images)))
     for i in range(1, len(images)):
         string_image = pygame.image.tostring(images[i], 'RGB', False)
         PIL_image = Image.frombytes('RGB', USABLE_RECT[2:], string_image)
         PIL_images.append(PIL_image)
         PIL_image.save(FILENAME+str(i)+'.png')
-        print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
+        #print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
     
-    #decoded_text = decodeImage(PIL_images, N_COLORS)
-    #print(decoded_text)
+    decoded_text = decodeImage(PIL_images, N_COLORS)
+    print(decoded_text)
+
+    display.fill((255, 255, 255))
+    myfont = pygame.font.SysFont("ubuntu", 22, True)
+
+    increment = 100
+    text_rect = pygame.Rect(50, 50, 50, 1200)
+
+    while decoded_text:
+        line = decoded_text[:increment]
+        decoded_text = decoded_text[increment:]
+
+        label = myfont.render(line, 10, (41, 83, 80))
+        display.blit(label, text_rect)
+        text_rect.centery += 40
+    
+    pygame.display.flip()
+
+    while grand_final:
+        for event in pygame.event.get():
+            if (event.type == KEYDOWN):
+                grand_final = 0
+    
+    pygame.quit()
+    
+    
     
                 
 take_shots(110)

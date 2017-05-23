@@ -82,38 +82,38 @@ def sortQuadrants(quadrantList, mask):
 
     if not mask:
         rest = size%12
-        padding = 12-rest
-        size += (rest!=0)*(padding)
+        padding = (rest!=0)*(12-rest)
+        size += padding
         
         toKeep = [1, 4, 8, 11]
         indices = [i for i in range(size) if i%12 in toKeep]
     elif mask == maskUp or mask == maskLeft:
         rest = size%6
-        padding = 6-rest
-        size += (rest!=0)*(padding)
+        padding = (rest!=0)*(6-rest)
+        size += padding
         
         toKeep = [0, 3, 4, 5]
         indices = [i for i in range(size) if i%6 in toKeep]
-    elif mask == maskDown or mask == maskRight or mask == downUp:
+    elif mask == maskDown or mask == maskRight or mask == maskDownUp:
         rest = size%6
-        padding = 6-rest
-        size += (rest!=0)*(padding)
+        padding = (rest!=0)*(6-rest)
+        size += padding
         
         toKeep = [0, 1, 2, 4]
         indices = [i for i in range(size) if i%6 in toKeep]
         indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[1::4], indices[2::4], indices[3::4], indices[::4]
     elif mask == maskUpDown:
         rest = size%6
-        padding = 6-rest
-        size += (rest!=0)*(padding)
+        padding = (rest!=0)*(6-rest)
+        size += padding
         
         toKeep = [0, 2, 3, 4]
         indices = [i for i in range(size) if i%6 in toKeep]
         indices[::4], indices[1::4], indices[2::4], indices[3::4] = indices[::4], indices[2::4], indices[3::4], indices[1::4]
     
-    quadrantList += [[-1]]*padding
+    quadrantList += [quadrantList[-1]]*padding
     sortedQuadrantList = [quadrantList[i] for i in indices]
-    return sortedQuadrantList[:-padding]
+    return sortedQuadrantList
 
 
 # turn border into right format for .crop method
@@ -273,7 +273,7 @@ def decodeImage(images, alphabetLength):
     quadColorSequenceList = getQuadColorSequenceList(images, borders)
 
     # We sort the quad list vis a vis the mask type
-    sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskDown)#maskCase)
+    sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)
     
     # We flatten the quad list into a color sequence
     colorSequence = flatten(sortedQuadColorSequenceList)
