@@ -8,7 +8,7 @@ idealRatio = 1280 / 720
 emptyQuad = (-1, -1)
 
 threshQ1 = np.array([40, 150, 230]) # Blue
-threshQ2 = np.array([100, 180, 160]) # Green
+threshQ2 = np.array([100, 180, 130]) # Green
 threshQ3 = np.array([170, 40, 40]) # Red 
 threshQ4 = np.array([155, 175, 120]) # Yellow
 
@@ -89,6 +89,7 @@ def is_edge(color, quadrant, color_source):
     if (quadrant == 'Q1'):
         return color[2] < threshQ1
     elif (quadrant == 'Q2'):
+        #return True
         return color[1] < threshQ2
     elif (quadrant == 'Q3'):
         return color[0] < threshQ3
