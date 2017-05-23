@@ -63,7 +63,7 @@ for index in range(start_seq, end_seq + 1):
 # # # Crop and Partition Tests
 
 
-testFile = 'night_test/lum8.png'
+testFile = 'night_test/lum5.png'
 
 img = Image.open(testFile)
 arr = np.array(img)

@@ -4,10 +4,15 @@
 import math
 from bitstring import BitArray
 import zlib
+import numpy as np
 
 
 # transforms a list of lists into a list
 flatten = lambda l: [item for sublist in l for item in sublist]
+
+def distance(c1, c2):
+    # Euclidian distance between vector c1 and c2
+    return np.linalg.norm(c1 - c2)
 
 def arrayToNumber(arr):
     # transforms an arr into int (e.g. [1, 3] -> 13)

@@ -167,10 +167,6 @@ def getQuadrants(border,image):
     arr2 = np.array(img.crop(flattenBorder(border[1])))
     return (arr1, arr2)
 
-# Euclidian distance between vector c1 and c2
-def distance(c1, c2):
-    return np.linalg.norm(c1 - c2) 
-
 # returns true if the colors passed (c1, and c2) correspon to the 
 # starting screen colors 
 def isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud):

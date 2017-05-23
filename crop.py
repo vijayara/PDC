@@ -1,4 +1,5 @@
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
+from tools import*
 import math
 import numpy as np
 
@@ -6,15 +7,10 @@ idealRatio = 1280 / 720
 
 emptyQuad = (-1, -1)
 
-#threshQ1 = np.array([170, 170, 253]) # Blue
-#threshQ2 = np.array([120, 160, 120]) # Green
-#threshQ3 = np.array([180, 120, 120]) # Red 
-#threshQ4 = np.array([200, 200, 120]) # Yellow
-
-threshQ1 = np.array([170, 170, 240]) # Blue
-threshQ2 = np.array([120, 160, 120]) # Green
-threshQ3 = np.array([180, 120, 120]) # Red 
-threshQ4 = np.array([200, 200, 120]) # Yellow
+threshQ1 = np.array([40, 150, 230]) # Blue
+threshQ2 = np.array([100, 180, 160]) # Green
+threshQ3 = np.array([170, 40, 40]) # Red 
+threshQ4 = np.array([155, 175, 120]) # Yellow
 
 def isQ1(color):
     return color[0] < threshQ1[0] and color[1] < threshQ1[1] and color[2] > threshQ1[2]
@@ -43,7 +39,7 @@ def isQ4(color):
 # our color positions are indeed the subscreens.
 def get_color_positions(arr, dim):
 
-    locQ1, locQ2, locQ3, locQ4 = (-1, -1), (-1, -1), (-1, -1), (-1, -1)
+    locQ1, locQ2, locQ3, locQ4 = emptyQuad, emptyQuad, emptyQuad, emptyQuad
 
     foundQ1, foundQ2, foundQ3, foundQ4 = False, False, False, False
 
@@ -82,25 +78,25 @@ def get_color_positions(arr, dim):
             #print(foundQ1, foundQ2)
     return [[locQ1, locQ2, locQ3, locQ4], [colorQ1, colorQ2, colorQ3, colorQ4]]
 
-# is_edge detects whether c2 is in the edge, current implementation is quite
-# simple and dosen't look at the previous neighbour (i.e. c1).
-def is_edge(c1, c2, color, colorQ):
 
-    threshQ1 = 170#np.array([170, 170, 170]) # Q2lue
-    threshQ2 = 170#np.array([120, 160, 120]) # Green
-    threshQ3 = 170#np.array([180, 120, 120]) # Red 
-    threshQ4 = 200#np.array([200, 200, 120]) # Yellow
+def is_edge(color, quadrant, color_source):
 
-    if (color == 'Q1'):
-        return c2[2] < threshQ1
-    elif (color == 'Q2'):
-        return c2[1] < threshQ2
-    elif (color == 'Q3'):
-        return c2[0] < threshQ3
-    elif (color == 'Q4'):
-        return c2[0] < threshQ4 or c2[1] < threshQ4
+    threshQ1 = color_source[2]-40
+    threshQ2 = color_source[1]-15
+    threshQ3 = color_source[0]-25
+    threshQ4 = int(color_source[0])+int(color_source[1])-21
+
+    if (quadrant == 'Q1'):
+        return color[2] < threshQ1
+    elif (quadrant == 'Q2'):
+        return color[1] < threshQ2
+    elif (quadrant == 'Q3'):
+        return color[0] < threshQ3
+    elif (quadrant == 'Q4'):
+        return int(color[0])+int(color[1]) < threshQ4
     else:
         return False
+
 
 # get_corner returns the top left corner when way = -1 and
 # the bottom right corner when way = 1.
@@ -109,28 +105,23 @@ def is_edge(c1, c2, color, colorQ):
 # either exploring to the top left, or bottom right accordingly.
 # note that it returns (j, i) since using the image.crop function
 # uses this same structure.
-def get_corner(arr, i, j, way, color, colorQ):   
+def get_corner(arr, i, j, way, color, colorQ):
+    height = np.shape(arr)[0]
+    width = np.shape(arr)[1]
 
     newI, newJ = i, j
 
     found, itr = False, 0
-    while (not found and newI > 0):
-
+    while (not found and newI > 0 and newI < height):
         newI += way
-        if (is_edge(arr[newI][j], arr[newI + way][j], color, colorQ)):
+        if (is_edge(arr[newI][j], color, colorQ)):
             found = True
-        if (newI < 0):
-            return (0, 0)
 
     found, itr = False, 0
-    while (not found and newJ > 0):
-
+    while (not found and newJ > 0 and newJ < width):
         newJ += way
-        if (is_edge(arr[i][newJ], arr[i][newJ + way], color, colorQ)):
+        if (is_edge(arr[i][newJ], color, colorQ)):
             found = True
-        if (newJ < 0):
-            return (0, 0)
-
 
     return (newJ, newI)
 
@@ -151,7 +142,6 @@ def get_bordersTMP(arr, dim):
 
     return borders
 
-# 
 
 def getBestBorderPair(borders):
 
