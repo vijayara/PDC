@@ -199,12 +199,9 @@ def findEndOfStartingSequence(images, borders, colorFirstQuad, colorSecondQaud):
 def findEndingIndex(colorSequence):
     
     blocks = len(colorSequence) // quadSize # this should always be an int
-    print(len(colorSequence))
-    print(blocks)
 
     for b in range(blocks):
         if all (green_index == color for color in colorSequence[b*quadSize: (b + 1)*quadSize]):
-            print[colorSequence[b*quadSize: (b + 1)*quadSize]]
             return b*quadSize
 
     return -1
@@ -295,24 +292,25 @@ def decodeImage(images, alphabetLength):
     # transform the color sequence to a letter sequence, were a letter resides
     # in n_tone alphabet
     letterSequence = colorSequenceToLetterSequence(colorSequence, alphabet)
-    
-    # remove ending sequence (find first green quad)
-    endingIndex = findEndingIndex(letterSequence)
-    print(endingIndex)
-    letterSequence = letterSequence[:endingIndex]
+
     # get the padding length
     padding = base_change(letterSequence[:paddingSize], alphabetLength, 10)
 
     # turn array number into int value
     padding = arrayToNumber(padding)
 
-    # number of zeroes appended to the alphabet.
+     # number of zeroes appended to the alphabet.
     n_zeros = quadSize - ((alphabetLength + paddingSize) % quadSize)
 
-    # remove the padding length, the padding at the end, and remember to remove
-    # the zeroes appended to the alphabet
-    codedMesage = letterSequence[paddingSize + n_zeros:-padding]
+    letterSequence = letterSequence[paddingSize + n_zeros:]
+    
+    # remove ending sequence (find first green quad)
+    endingIndex = findEndingIndex(letterSequence)
 
+    letterSequence = letterSequence[:endingIndex]
+   
+    codedMesage = letterSequence[:-padding]
+   
 
     # return decoded message
     return colors_to_text(codedMesage, n_tones)
