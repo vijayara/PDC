@@ -82,7 +82,7 @@ def take_shots(capture_interval=1000, n_tons=2):
 
     while grand_final:
         for event in pygame.event.get():
-            if (event.type == KEYDOWN):
+            if (event.type == KEYDOWN and event.key == K_q):
                 grand_final = 0
     
     pygame.quit()

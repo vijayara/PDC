@@ -16,7 +16,9 @@ mask = (-1, -1)
 
 # Parameters
 n_tones = 2
-alphabetLength = 8
+
+n_colors = n_tones**3
+alphabetLength = n_colors
 paddingSize = 2
 
 green_index = 2
@@ -293,7 +295,7 @@ def decodeImage(images, alphabetLength):
     # turn array number into int value
     padding = arrayToNumber(padding)
 
-     # number of zeroes appended to the alphabet.
+    # number of zeroes appended to the alphabet.
     n_zeros = quadSize - ((alphabetLength + paddingSize) % quadSize)
 
     letterSequence = letterSequence[paddingSize + n_zeros:]
@@ -303,7 +305,7 @@ def decodeImage(images, alphabetLength):
 
     # remove ending screen (green)
     letterSequence = letterSequence[:endingIndex]
-   
+
     # remove padding sequence at the end (black)
     codedMessage = letterSequence[:-padding]
 
