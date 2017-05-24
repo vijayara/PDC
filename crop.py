@@ -7,10 +7,21 @@ idealRatio = 1280 / 720
 
 emptyQuad = (-1, -1)
 
-threshQ1 = np.array([50, 150, 230]) # Blue
-threshQ2 = np.array([100, 180, 140]) # Green
-threshQ3 = np.array([170, 50, 40]) # Red 
-threshQ4 = np.array([155, 175, 120]) # Yellow
+#threshQ1 = np.array([50, 150, 230]) # Blue
+#threshQ2 = np.array([100, 180, 140]) # Green
+#threshQ3 = np.array([170, 50, 40]) # Red 
+#threshQ4 = np.array([155, 175, 120]) # Yellow
+
+#HighLum
+threshQ1 = np.array([65, 150, 230]) # Blue
+threshQ2 = np.array([100, 200, 140]) # Green
+threshQ3 = np.array([190, 50, 40]) # Red 
+threshQ4 = np.array([200, 200, 110]) # Yellow
+
+#threshQ1 = np.array([50, 150, 230]) # Blue
+#threshQ2 = np.array([80, 180, 110]) # Green
+#threshQ3 = np.array([170, 50, 40]) # Red 
+#threshQ4 = np.array([155, 175, 120]) # Yellow
 
 def isQ1(color):
     return color[0] < threshQ1[0] and color[1] < threshQ1[1] and color[2] > threshQ1[2]
@@ -78,15 +89,20 @@ def get_color_positions(arr, dim):
 
 def is_edge(color, quadrant, color_source):
 
+    #HighLum
     threshQ1 = color_source[2]-40
-    threshQ2 = color_source[1]-15
-    threshQ3 = color_source[0]-25
-    threshQ4 = int(color_source[0])+int(color_source[1])-40#28
+    threshQ2 = color_source[1]-25
+    threshQ3 = color_source[0]-30
+    threshQ4 = int(color_source[0])+int(color_source[1])-60
+
+    #threshQ1 = color_source[2]-40
+    #threshQ2 = color_source[1]-15
+    #threshQ3 = color_source[0]-25
+    #threshQ4 = int(color_source[0])+int(color_source[1])-40#28
 
     if (quadrant == 'Q1'):
         return color[2] < threshQ1
     elif (quadrant == 'Q2'):
-        #return True
         return color[1] < threshQ2
     elif (quadrant == 'Q3'):
         return color[0] < threshQ3
