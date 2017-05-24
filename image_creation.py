@@ -5,7 +5,7 @@ from tools import *
 import pygame
 from pygame.locals import *
     
-def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=30):
+def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, cross_size=30):
     pygame.init()
     pygame.mouse.set_visible(False)
 
@@ -210,5 +210,5 @@ Then one day the tribe that claimed to be the oldest, the first, came upon an oa
 And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 
-#(text, rows=3, columns=5, n_tons=2, refresh_interval=500, cross_size=30)
-display(text200, 3, 5, 2, 440)
+#(text, rows=4, columns=6, n_tons=2, refresh_interval=500, cross_size=30)
+display(text200, 4, 6, 2, 440)

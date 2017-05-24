@@ -16,13 +16,13 @@ mask = (-1, -1)
 
 # Parameters
 n_tones = 2
-alphabetLength = 8
+alphabetLength = n_tones**3
 paddingSize = 2
 
 green_index = 2
 
 avgColorDelta = 3
-v_part, h_part = 3, 5
+v_part, h_part = 4, 6
 quadSize = v_part * h_part
 
 # If we have 4 samples of each image, and we want to take each third one:
