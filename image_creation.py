@@ -130,7 +130,7 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
     ##### 1 ###### 2 ###### 3 #####
     ###       ##       ##       ###
     ###  D A  ##  B D  ##  C C  ###
-    ###  A A  ##  B B  ##  D C  ###
+    ###  A A  ##  B B  ##  C D  ###
     ###       ##       ##       ###
     ###############################
     ###############################
@@ -171,13 +171,13 @@ def display(text, rows=3, columns=5, n_tons=2, refresh_interval=110, cross_size=
                         # fill in green if nothin to display
                         display.blit(particular_quadrants[1], QUADRANT_OFFSETS[1])
                 elif config == 2:
-                    for i in (0,1,3):
+                    for i in (0,1,2):
                         display.blit(quadrants[current_quadrant], QUADRANT_OFFSETS[i])
                     if(current_quadrant+1 < n_quadrants):
-                        display.blit(quadrants[current_quadrant+1], QUADRANT_OFFSETS[2])
+                        display.blit(quadrants[current_quadrant+1], QUADRANT_OFFSETS[3])
                     else:
                         # fill in green if nothin to display
-                        display.blit(particular_quadrants[1], QUADRANT_OFFSETS[2])
+                        display.blit(particular_quadrants[1], QUADRANT_OFFSETS[3])
                     # at config 2, one more increment to skip the D
                     current_quadrant += 1
                 else:
