@@ -209,6 +209,7 @@ Then one day the tribe that claimed to be the oldest, the first, came upon an oa
  colored birds sang sweetly in their boughs, and beasts lay quietly in their shade.
 And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
+text = "Il etait une foi un nain becile. Jadis ils etaient douze, ou treize... Enfin, quoique, ils etaient peut-etre plus. Tout commenca la-bas, sur les charbons de bois. Rene, fils de Bernard et de Zeus lui meme. Dans dix secondes on arrete et on se casse, 91283290183201938 fin. "
 
 #(text, rows=4, columns=6, n_tons=2, refresh_interval=500, cross_size=30)
-display(text200, 4, 6, 2, 440)
+display(text, 4, 6, 2, 440)

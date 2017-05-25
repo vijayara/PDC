@@ -178,9 +178,9 @@ def getBestBorderPair(borders, quadIndex):
 
 def get_borders(arr, dim):
     colors = ['Q1', 'Q2', 'Q3', 'Q4']
-    locations = get_color_positions(arr, dim) 
+    locations = get_color_positions(arr, dim)
     chosenQuads = -1
-    nb_quad = 4 - sum([emptyQuad == quad for quad in locations])
+    nb_quad = 4 - sum([emptyQuad == quad for quad in locations[0]])
     if nb_quad < 2:
         return []
 

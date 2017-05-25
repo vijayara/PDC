@@ -1,11 +1,12 @@
 from PIL import Image
+import textwrap
 from image_decoding import *
 import pygame, sys
 import pygame.camera
 from pygame.locals import *
 
 
-def take_shots(capture_interval=1000, n_tons=2):
+def take_shots(capture_interval=110, n_tons=2):
     N_COLORS = n_tons**3
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -53,33 +54,39 @@ def take_shots(capture_interval=1000, n_tons=2):
                 cam.stop()
     
 
-    print("Number of images:" + str(len(images)))
+    # add every image into a PIL list
     for i in range(1, len(images)):
         string_image = pygame.image.tostring(images[i], 'RGB', False)
         PIL_image = Image.frombytes('RGB', USABLE_RECT[2:], string_image)
         PIL_images.append(PIL_image)
         PIL_image.save(FILENAME+str(i)+'.png')
-        #print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
     
+    # decode the images into a string
     decoded_text = decodeImage(PIL_images, N_COLORS)
+
+    # save the decoded message in a file
+    with open("output.txt", "w") as text_file:
+        print(decoded_text, file=text_file)
+    
+    # print the decoded message in terminal
     print(decoded_text)
 
+    # Display the decoded message in the screen as soon as it is decoded
+    text_to_display =  decoded_text.replace('\r', ' ').replace('\n', ' ')
+    lines = textwrap.wrap(text_to_display, 100)
     display.fill((255, 255, 255))
     myfont = pygame.font.SysFont("ubuntu", 22, True)
-
-    increment = 100
     text_rect = pygame.Rect(50, 50, 50, 1200)
-
-    while decoded_text:
-        line = decoded_text[:increment]
-        decoded_text = decoded_text[increment:]
+    while lines:
+        line = lines[0]
+        lines.pop(0)
 
         label = myfont.render(line, 10, (41, 83, 80))
         display.blit(label, text_rect)
         text_rect.centery += 40
-    
     pygame.display.flip()
 
+    # displays the message until we push on "q"
     while grand_final:
         for event in pygame.event.get():
             if (event.type == KEYDOWN and event.key == K_q):
@@ -87,7 +94,9 @@ def take_shots(capture_interval=1000, n_tons=2):
     
     pygame.quit()
     
-    
+    # save the images in the disk (to have a )
+    #for i in range(len(PIL_images)):
+    #    PIL_images[i].save(FILENAME+str(i)+'.png')
     
                 
 take_shots(110)
