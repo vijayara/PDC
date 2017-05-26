@@ -211,5 +211,8 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 text = "Il etait une foi un nain becile. Jadis ils etaient douze, ou treize... Enfin, quoique, ils etaient peut-etre plus. Tout commenca la-bas, sur les charbons de bois. Rene, fils de Bernard et de Zeus lui meme. Dans dix secondes on arrete et on se casse, 91283290183201938 fin. "
 
+config_safe = (text, 3, 5, 2, 330, 10)
+config1 = (text, 4, 6, 2, 330, 30)
+
 # def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
-display(text, 3, 5, 2, 330, 10)
+display(config1)

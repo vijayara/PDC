@@ -97,6 +97,9 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     # save the images in the disk (to have a )
     #for i in range(len(PIL_images)):
     #    PIL_images[i].save(FILENAME+str(i)+'.png')
-    
+
+config_safe = (110, 2, 10, 3, 5)
+config1 = (110, 2, 30, 4, 6)
+
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):   
-take_shots(110, 2, 0, 4, 6)
+take_shots(config1)
