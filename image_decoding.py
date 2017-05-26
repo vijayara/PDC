@@ -24,7 +24,7 @@ green_index = 2
 avgColorDelta = 3
 
 # If we have 4 samples of each image, and we want to take each third one:
-timingInterpolationStart = 2
+timingInterpolationStart = 1
 timingInterpolationJump = 3
 
 # returns the letter with the closest euclidian distance to the detected color.

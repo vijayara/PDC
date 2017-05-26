@@ -99,4 +99,4 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     #    PIL_images[i].save(FILENAME+str(i)+'.png')
     
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):   
-take_shots(110, 2, 10, 3, 5)
+take_shots(110, 2, 0, 4, 6)
