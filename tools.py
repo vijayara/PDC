@@ -19,7 +19,7 @@ def arrayToNumber(arr):
     # transforms an arr into int (e.g. [1, 3] -> 13)
     return int(''.join(map(str,arr)))
 
-def encode(string):
+def encode(string, coding):
     #encode the text in bytes
     in_bytes = string.encode("utf-8")
     #compress the bytes
@@ -30,7 +30,7 @@ def encode(string):
         compressed = rs.encode(compressed)
     return compressed
 
-def decode(compressed):
+def decode(compressed, coding):
     #correct errors if coding!=0
     if(coding):
         rs = RSCodec(coding)
