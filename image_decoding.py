@@ -22,7 +22,6 @@ paddingSize = 2
 green_index = 2
 
 avgColorDelta = 3
-quadSize = v_part * h_part
 
 # If we have 4 samples of each image, and we want to take each third one:
 timingInterpolationStart = 2
@@ -191,7 +190,7 @@ def findEndOfStartingSequence(images, borders, colorFirstQuad, colorSecondQaud):
     return itr
 
 # finds the index at which the ending sequence starts
-def findEndingIndex(colorSequence):
+def findEndingIndex(colorSequence, quadSize):
     
     blocks = len(colorSequence) // quadSize # this should always be an int
 
@@ -260,6 +259,7 @@ def getQuadColorSequenceList(images, borders, v_part, h_part):
 # decodedImage takes an image list (file_names) and an alphabet length
 # and returns the decoded message
 def decodeImage(images, alphabetLength, coding, v_part, h_part):
+    quadSize = v_part * h_part
 
     # Get borders needed to extract visible quads, the mask type (maskCase)
     # and the images without the starting sequence. (i.e. the image set
@@ -299,7 +299,7 @@ def decodeImage(images, alphabetLength, coding, v_part, h_part):
     letterSequence = letterSequence[paddingSize + n_zeros:]
     
     # remove ending sequence (find first green quad)
-    endingIndex = findEndingIndex(letterSequence)
+    endingIndex = findEndingIndex(letterSequence, quadSize)
 
     # remove ending screen (green)
     letterSequence = letterSequence[:endingIndex]
