@@ -116,7 +116,7 @@ def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, c
     
     # Printing informations ----------------------------------------------------------
     print("-> Colors of the message:\n", quadrants_colors)
-    print("-> Verification text (reverse):\n", colors_to_text(color_message, N_TONS))
+    print("-> Verification text (reverse):\n", colors_to_text(color_message, N_TONS, coding))
     print("-> Number of quadrants:", n_quadrants)
     print("-> Padding:", remaining_colors)
     print("-> Padding info:", colors_for_padding)
