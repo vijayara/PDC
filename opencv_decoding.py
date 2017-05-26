@@ -46,7 +46,7 @@ def take_shots(capture_interval=110, n_tons=2):
             if event.type == USEREVENT:
                 _,cv2_im = cap.read()
                 cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
-                cv2_im = cv2_im[y:y+h,x:x+w]
+                cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
 
                 images.append(cv2_im)
                 times.append(pygame.time.get_ticks())
