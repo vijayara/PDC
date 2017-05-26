@@ -24,7 +24,6 @@ paddingSize = 2
 green_index = 2
 
 avgColorDelta = 3
-v_part, h_part = 4, 6
 quadSize = v_part * h_part
 
 # If we have 4 samples of each image, and we want to take each third one:
@@ -235,7 +234,7 @@ def getQuadrantArrayList(images, borders):
 
 # returns the a list where each element is a sequence of vectors of colors
 # corresponding to the quadrant in the screen quadrant space.
-def getQuadColorSequenceList(images, borders):
+def getQuadColorSequenceList(images, borders, v_part, h_part):
 
     quadColorSequenceList = []
     bordersOfSubQuadrant = getBordersOfSubQuadrant(borders, v_part, h_part)
@@ -261,7 +260,7 @@ def getQuadColorSequenceList(images, borders):
 
 # decodedImage takes an image list (file_names) and an alphabet length
 # and returns the decoded message
-def decodeImage(images, alphabetLength, coding):
+def decodeImage(images, alphabetLength, coding, v_part, h_part):
 
     # Get borders needed to extract visible quads, the mask type (maskCase)
     # and the images without the starting sequence. (i.e. the image set
@@ -271,7 +270,7 @@ def decodeImage(images, alphabetLength, coding):
     # transform the image set into a quadrant list. (i.e. for each image we
     # extract the 2 corresponding quadrants). Note that each quadrant is
     # a list of RGB vectors in sequence.
-    quadColorSequenceList = getQuadColorSequenceList(images, borders)
+    quadColorSequenceList = getQuadColorSequenceList(images, borders, v_part, h_part)
 
     # We sort the quad list vis a vis the mask type
     sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)

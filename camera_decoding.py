@@ -6,7 +6,7 @@ import pygame.camera
 from pygame.locals import *
 
 
-def take_shots(capture_interval=110, n_tons=2, coding=0):
+def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     N_COLORS = n_tons**3
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -62,7 +62,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0):
         PIL_image.save(FILENAME+str(i)+'.png')
     
     # decode the images into a string
-    decoded_text = decodeImage(PIL_images, N_COLORS, coding)
+    decoded_text = decodeImage(PIL_images, N_COLORS, coding, rows, columns)
 
     # save the decoded message in a file
     with open("output.txt", "w") as text_file:
@@ -98,5 +98,5 @@ def take_shots(capture_interval=110, n_tons=2, coding=0):
     #for i in range(len(PIL_images)):
     #    PIL_images[i].save(FILENAME+str(i)+'.png')
     
-# capture_interval=110, n_tons=2, coding=0           
-take_shots(110, 2, 10)
+# take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):   
+take_shots(110, 2, 10, 3, 5)
