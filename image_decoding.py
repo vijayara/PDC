@@ -260,7 +260,7 @@ def getQuadColorSequenceList(images, borders):
 
 # decodedImage takes an image list (file_names) and an alphabet length
 # and returns the decoded message
-def decodeImage(images, alphabetLength, coding=0):
+def decodeImage(images, alphabetLength, coding):
 
     # Get borders needed to extract visible quads, the mask type (maskCase)
     # and the images without the starting sequence. (i.e. the image set

@@ -7,7 +7,7 @@ from pygame.locals import *
 import cv2
 
 
-def take_shots(capture_interval=110, n_tons=2):
+def take_shots(capture_interval=110, n_tons=2, coding=0):
     N_COLORS = n_tons**3
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -71,7 +71,7 @@ def take_shots(capture_interval=110, n_tons=2):
         PIL_image.save(FILENAME+str(i)+'.png')
     
     # decode the images into a string
-    decoded_text = decodeImage(PIL_images, N_COLORS)
+    decoded_text = decodeImage(PIL_images, N_COLORS, coding)
 
     # save the decoded message in a file
     with open("output.txt", "w") as text_file:
@@ -104,5 +104,5 @@ def take_shots(capture_interval=110, n_tons=2):
     pygame.quit()
     
                 
-take_shots(110)
-
+# capture_interval=110, n_tons=2, coding=0           
+take_shots(110, 2, 10)

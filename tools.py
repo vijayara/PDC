@@ -76,7 +76,7 @@ def base_change(in_array, in_base, out_base):
         current = current // out_base
     return ([0]*starting_zeros) + new_num_array
 
-def text_to_colors(text, n_tons, coding=0):
+def text_to_colors(text, n_tons, coding):
     n_colors = n_tons**3
     
     #encode the text with compression
@@ -89,7 +89,7 @@ def text_to_colors(text, n_tons, coding=0):
     colors = base_change(bits_array, 2, n_colors)
     return colors
 
-def colors_to_text(colors, n_tons, coding=0):
+def colors_to_text(colors, n_tons, coding):
     n_colors = n_tons**3
     
     bits_array = base_change(colors, n_colors, 2)    
