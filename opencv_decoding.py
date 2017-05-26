@@ -14,8 +14,9 @@ def take_shots(capture_interval=110, n_tons=2):
     cap = cv2.VideoCapture(0)
     
     RESOLUTION = (1280, 720)
-    USABLE_RECT = (RESOLUTION[0]//3, RESOLUTION[1]//3)*2
-    CROP = (RESOLUTION[1]//3, 2*RESOLUTION[1]//3, RESOLUTION[0]//3, 2*RESOLUTION[0]//3)
+    USABLE_SIZE = (RESOLUTION[0]//3, RESOLUTION[1]//3)
+    USABLE_RECT = USABLE_SIZE*2
+    CROP = (USABLE_SIZE[1], 2*USABLE_SIZE[1], USABLE_SIZE[0], 2*USABLE_SIZE[0])
         
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     FILENAME = 'shots/pic'
@@ -28,7 +29,15 @@ def take_shots(capture_interval=110, n_tons=2):
     PIL_images = []
     times = []
     while preparation:
-        #display.blit(cam.get_image().subsurface(USABLE_RECT), (0,0))
+        _,cv2_im = cap.read()
+        cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
+        cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
+        PIL_image = Image.fromarray(images[i])
+        string_image = PIL_image.tostring("raw", "RGB")
+        pygame_image = pygame.image.fromstring(string_image, USABLE_SIZE, "RGB", False)
+        
+        display.blit(pygame_image, USABLE_SIZE)
+
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_s:
