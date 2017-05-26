@@ -29,16 +29,16 @@ def take_shots(capture_interval=110, n_tons=2):
     PIL_images = []
     times = []
     while preparation:
+        # Display preview to aim screen
         _,cv2_im = cap.read()
         cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
         cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
-        PIL_image = Image.fromarray(images[i])
-        string_image = PIL_image.tostring("raw", "RGB")
+        PIL_image = Image.fromarray(cv2_im)
+        string_image = PIL_image.tobytes("raw", "RGB")
         pygame_image = pygame.image.fromstring(string_image, USABLE_SIZE, "RGB", False)
-        
         display.blit(pygame_image, USABLE_SIZE)
-
         pygame.display.flip()
+
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_s:
                 pygame.time.delay(1000)# you have 1 sec to remove hands of canal
@@ -61,12 +61,11 @@ def take_shots(capture_interval=110, n_tons=2):
                 times.append(pygame.time.get_ticks())
             if (event.type == KEYDOWN):
                 run = 0
-                #cam.stop()
+                # stop cv2 camera if possible
     
 
     # add every image into a PIL list
     for i in range(1, len(images)):
-        #string_image = pygame.image.tostring(images[i], 'RGB', False)
         PIL_image = Image.fromarray(images[i])
         PIL_images.append(PIL_image)
         PIL_image.save(FILENAME+str(i)+'.png')
