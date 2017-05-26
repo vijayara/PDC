@@ -14,11 +14,8 @@ def take_shots(capture_interval=110, n_tons=2):
     N_COLORS = n_tons**3
     pygame.init()
     pygame.mouse.set_visible(False)
-    #pygame.camera.init()
     
     RESOLUTION = (1280, 720)
-    #cam = pygame.camera.Camera("/dev/video0", RESOLUTION)
-    #cam.start()
     USABLE_RECT = (RESOLUTION[0]//3, RESOLUTION[1]//3)*2
         
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -29,7 +26,7 @@ def take_shots(capture_interval=110, n_tons=2):
     grand_final = 1
 
     images = []
-    #PIL_images = []
+    PIL_images = []
     times = []
     while preparation:
         #display.blit(cam.get_image().subsurface(USABLE_RECT), (0,0))
@@ -53,9 +50,8 @@ def take_shots(capture_interval=110, n_tons=2):
                 #image = cam.get_image().subsurface(USABLE_RECT)
                 _,cv2_im = cap.read()
                 cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
-                image = Image.fromarray(cv2_im)
 
-                images.append(image)
+                images.append(cv2_im)
                 times.append(pygame.time.get_ticks())
             if (event.type == KEYDOWN):
                 run = 0
@@ -65,12 +61,12 @@ def take_shots(capture_interval=110, n_tons=2):
     # add every image into a PIL list
     for i in range(1, len(images)):
         #string_image = pygame.image.tostring(images[i], 'RGB', False)
-        #PIL_image = Image.frombytes('RGB', USABLE_RECT[2:], string_image)
-        #PIL_images.append(PIL_image)
-        images[i].save(FILENAME+str(i)+'.png')
+        PIL_image = Image.fromarray(images[i])
+        PIL_images.append(PIL_image)
+        PIL_image.save(FILENAME+str(i)+'.png')
     
     # decode the images into a string
-    decoded_text = decodeImage(images, N_COLORS)
+    decoded_text = decodeImage(PIL_images, N_COLORS)
 
     # save the decoded message in a file
     with open("output.txt", "w") as text_file:
@@ -101,10 +97,6 @@ def take_shots(capture_interval=110, n_tons=2):
                 grand_final = 0
     
     pygame.quit()
-    
-    # save the images in the disk (to have a )
-    #for i in range(len(PIL_images)):
-    #    PIL_images[i].save(FILENAME+str(i)+'.png')
     
                 
 take_shots(110)
