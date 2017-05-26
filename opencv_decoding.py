@@ -8,15 +8,14 @@ import cv2
 
 
 def take_shots(capture_interval=110, n_tons=2):
-    cap = cv2.VideoCapture(0) # 
-
-
     N_COLORS = n_tons**3
     pygame.init()
     pygame.mouse.set_visible(False)
+    cap = cv2.VideoCapture(0)
     
     RESOLUTION = (1280, 720)
     USABLE_RECT = (RESOLUTION[0]//3, RESOLUTION[1]//3)*2
+    CROP = (RESOLUTION[0]//3, 2*RESOLUTION[0]//3, RESOLUTION[1]//3, 2*RESOLUTION[1]//3)
         
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     FILENAME = 'shots/pic'
@@ -34,7 +33,6 @@ def take_shots(capture_interval=110, n_tons=2):
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_s:
                 pygame.time.delay(1000)# you have 1 sec to remove hands of canal
-                #cam.get_image()# needed to refresh camera
                 pygame.time.set_timer(USEREVENT, capture_interval)
                 preparation = 0
                 display.fill((0,0,0))
@@ -42,14 +40,13 @@ def take_shots(capture_interval=110, n_tons=2):
             if event.type == KEYDOWN and event.key == K_q:
                 preparation = 0
                 run = 0
-                #cam.stop()
                 pygame.quit()
     while run:
         for event in pygame.event.get():
             if event.type == USEREVENT:
-                #image = cam.get_image().subsurface(USABLE_RECT)
                 _,cv2_im = cap.read()
                 cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
+                cv2_im = cv2_im[y:y+h,x:x+w]
 
                 images.append(cv2_im)
                 times.append(pygame.time.get_ticks())
