@@ -3,6 +3,7 @@
 
 import math
 from bitstring import BitArray
+from reedsolo import RSCodec
 import zlib
 import numpy as np
 
@@ -23,9 +24,17 @@ def encode(string):
     in_bytes = string.encode("utf-8")
     #compress the bytes
     compressed = zlib.compress(in_bytes, 9)
+    # if coding!=0, add error correcting code
+    if(coding):
+        rs = RSCodec(coding)
+        compressed = rs.encode(compressed)
     return compressed
 
 def decode(compressed):
+    #correct errors if coding!=0
+    if(coding):
+        rs = RSCodec(coding)
+        compressed = rs.decode(compressed)
     #decompress the bytes
     in_bytes = zlib.decompress(compressed)
     #decode the text in bytes
@@ -67,11 +76,11 @@ def base_change(in_array, in_base, out_base):
         current = current // out_base
     return ([0]*starting_zeros) + new_num_array
 
-def text_to_colors(text, n_tons):
+def text_to_colors(text, n_tons, coding=0):
     n_colors = n_tons**3
     
     #encode the text with compression
-    encoded = encode(text)
+    encoded = encode(text, coding)
     #takes the bits of the message
     bits = BitArray(encoded).bin
     #makes the bits as an array
@@ -80,12 +89,12 @@ def text_to_colors(text, n_tons):
     colors = base_change(bits_array, 2, n_colors)
     return colors
 
-def colors_to_text(colors, n_tons):
+def colors_to_text(colors, n_tons, coding=0):
     n_colors = n_tons**3
     
     bits_array = base_change(colors, n_colors, 2)    
     bit_string = ''.join(map(str, bits_array))
     bits = BitArray('0b' + bit_string)
     encoded = bits.tobytes()
-    text = decode(encoded)
+    text = decode(encoded, coding)
     return text

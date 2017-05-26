@@ -5,7 +5,7 @@ from tools import *
 import pygame
 from pygame.locals import *
     
-def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, cross_size=30):
+def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
     pygame.init()
     pygame.mouse.set_visible(False)
 
@@ -42,7 +42,7 @@ def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, cross_size=
         MOST_DISTANCES.append((N_TONS**i)*(N_TONS-1))
     MOST_DISTANCES.append(N_COLORS-1)
     
-    color_message = text_to_colors(text, N_TONS)
+    color_message = text_to_colors(text, N_TONS, coding)
     
     # number of colors not used at the end of the message
     n_colors_last_quadrant = len(color_message) % N_TILES
@@ -211,5 +211,5 @@ And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
 text = "Il etait une foi un nain becile. Jadis ils etaient douze, ou treize... Enfin, quoique, ils etaient peut-etre plus. Tout commenca la-bas, sur les charbons de bois. Rene, fils de Bernard et de Zeus lui meme. Dans dix secondes on arrete et on se casse, 91283290183201938 fin. "
 
-#(text, rows=4, columns=6, n_tons=2, refresh_interval=500, cross_size=30)
-display(text, 4, 6, 2, 440)
+# def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
+display(text, 4, 6, 2, 330, 0)
