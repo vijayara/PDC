@@ -15,7 +15,7 @@ def take_shots(capture_interval=110, n_tons=2):
     
     RESOLUTION = (1280, 720)
     USABLE_RECT = (RESOLUTION[0]//3, RESOLUTION[1]//3)*2
-    CROP = (RESOLUTION[0]//3, 2*RESOLUTION[0]//3, RESOLUTION[1]//3, 2*RESOLUTION[1]//3)
+    CROP = (RESOLUTION[1]//3, 2*RESOLUTION[1]//3, RESOLUTION[0]//3, 2*RESOLUTION[0]//3)
         
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     FILENAME = 'shots/pic'
