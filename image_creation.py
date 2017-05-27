@@ -215,4 +215,4 @@ config_safe = (text, 3, 5, 2, 330, 10)
 config1 = (text, 4, 6, 2, 330, 30)
 
 # def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
-display(config1)
+display(*config1)

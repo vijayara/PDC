@@ -60,6 +60,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         PIL_image = Image.frombytes('RGB', USABLE_RECT[2:], string_image)
         PIL_images.append(PIL_image)
         PIL_image.save(FILENAME+str(i)+'.png')
+        print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
     
     # decode the images into a string
     decoded_text = decodeImage(PIL_images, N_COLORS, coding, rows, columns)
@@ -102,4 +103,4 @@ config_safe = (110, 2, 10, 3, 5)
 config1 = (110, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):   
-take_shots(config1)
+take_shots(*config1)
