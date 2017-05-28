@@ -59,7 +59,6 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     # Add threaded camera
     vs = WebcamVideoStream(src=0).start()
     previous_milli_sec = 0
-    new_interval = 0
     frames = []
 
     #for test
@@ -68,7 +67,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     while run:
         current_milli_sec = current_milli_time() % capture_interval
 
-        if current_milli_sec == new_interval and previous_milli_sec != new_interval:
+        if current_milli_sec < previous_milli_sec:
             frame = vs.read()
             frames.append(frame)
             # for interval test
