@@ -58,30 +58,30 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
 
     # Add threaded camera
     vs = WebcamVideoStream(src=0).start()
-    previous_milli_sec = 0
+    previous_time = 0
     frames = []
 
     #for test
     times = []
 
     while run:
-        current_milli_sec = current_milli_time() % capture_interval
+        current_time = current_milli_time()
+        loop_time = current_time % capture_interval
 
-        if current_milli_sec < previous_milli_sec:
+        if loop_time < previous_time:
             frame = vs.read()
             frames.append(frame)
             # for interval test
-            times.append(current_milli_time())
-    
-        previous_milli_sec = current_milli_sec
+            times.append(current_time)
+        previous_time = loop_time
 
         for event in pygame.event.get():
-
             if (event.type == KEYDOWN):
                 run = 0
                 # stop cv2 camera if possible
 
-    # transform frame into PIL format. 
+    # transform frame into PIL format, skipping the first one
+    # for quality reason
     PIL_images = []
     for frame in frames[1:]:
         cv2_im = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
@@ -127,12 +127,10 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
    # output testing 
 
 
-    for x in range(1, len(PIL_images) - 1): 
+    for x in range(1, len(PIL_images)): 
         PIL_images[x].save(FILENAME + str(x) + ".png")
         if (x < len(frames)-1):
             print("Interval", str(x-1)+"-"+str(x)+": "+str(times[x]-times[x-1]))
-
-        x += 1
 
     # - - - - 
 
