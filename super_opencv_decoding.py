@@ -86,6 +86,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     PIL_images = []
     for frame in frames[1:]:
         cv2_im = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
         pil_im = Image.fromarray(cv2_im)
         PIL_images.append(pil_im)
     
@@ -140,7 +141,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     
 config_safe = (110, 2, 10, 3, 5)
 config1 = (110, 2, 30, 4, 6)
-config_test = (110, 2, 30, 4, 6)
+config_test = (35, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_test)
