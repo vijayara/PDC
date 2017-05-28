@@ -58,7 +58,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
 
     # Add threaded camera
     vs = WebcamVideoStream(src=0).start()
-    previous_mili_sec = 0
+    previous_milli_sec = 0
     new_interval = 0
     frames = []
 
@@ -66,15 +66,15 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     times = []
 
     while run:
-        current_mili_sec = current_milli_time() % capture_interval
+        current_milli_sec = current_milli_time() % capture_interval
 
-        if current_mili_sec == new_interval and previous_mili_sec != new_interval:
+        if current_milli_sec == new_interval and previous_milli_sec != new_interval:
             frame = vs.read()
             frames.append(frame)
             # for interval test
             times.append(current_milli_time())
     
-        previous_mili_sec = current_mili_sec
+        previous_milli_sec = current_milli_sec
 
         for event in pygame.event.get():
 
