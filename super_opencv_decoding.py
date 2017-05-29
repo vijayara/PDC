@@ -11,6 +11,8 @@ import cv2
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
+bad_images = 8
+
 def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     N_COLORS = n_tons**3
     pygame.init()
@@ -83,7 +85,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     # transform frame into PIL format, skipping the first one
     # for quality reason
     PIL_images = []
-    for frame in frames[1:]:
+    for frame in frames[bad_images:]:
         cv2_im = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
         cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
         pil_im = Image.fromarray(cv2_im)
@@ -120,13 +122,16 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
             for event in pygame.event.get():
                 if (event.type == KEYDOWN and event.key == K_q):
                     grand_final = 0
-    except:
+
+
+    except Exception as e:
 
         for x in range(1, len(PIL_images)): 
             PIL_images[x].save(FILENAME + str(x) + ".png")
             if (x < len(frames)-1):
                 print("Interval", str(x-1)+"-"+str(x)+": "+str(times[x]-times[x-1]))
 
+        print(e)
     pygame.quit()
     
 config_safe = (110, 2, 10, 3, 5)
