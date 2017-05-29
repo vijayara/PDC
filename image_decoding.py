@@ -164,7 +164,7 @@ def getQuadrants(border,image):
 # returns true if the colors passed (c1, and c2) correspon to the 
 # starting screen colors 
 def isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud):
-    delta = 5 # Note from expermiment, same screen seems to the order of 2, while different around 60
+    delta = 20 # Note from expermiment, same screen seems to the order of 2, while different around 60
     return distance(c1, colorFirstQuad) < delta and distance(c2, colorSecondQaud) < delta
 
 

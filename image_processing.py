@@ -34,10 +34,10 @@ def partitionTest(file_name, borders, num =0):
         itr = itr + 1
     source_img.save('partitionTest' + str(num) + '.png', "PNG")
 
-file_path = 'ultime6/pic'
+file_path = 'shot_test_mac/shots/pic'
 extension = '.png'
 start_seq = 1
-end_seq = 94
+end_seq = 69
 images = []
 
 for index in range(start_seq, end_seq + 1):
@@ -48,9 +48,11 @@ for index in range(start_seq, end_seq + 1):
 
 
 
+coding = 30
+v_part = 4
+h_part = 6
 
-
-decodedMesage = decodeImage(images, alphabetLength)
+decodedMesage = decodeImage(images, alphabetLength, coding, v_part, h_part)
 print(decodedMesage)
 
 

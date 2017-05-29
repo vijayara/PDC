@@ -23,7 +23,7 @@ paddingSize = 2
 
 green_index = 2
 
-avgColorDelta = 3
+avgColorDelta = 2
 
 # If we have 4 samples of each image, and we want to take each third one:
 timingInterpolationStart = 1
@@ -168,7 +168,7 @@ def getQuadrants(border,image):
 # returns true if the colors passed (c1, and c2) correspon to the 
 # starting screen colors 
 def isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud):
-    delta = 5 # Note from expermiment, same screen seems to the order of 2, while different around 60
+    delta = 20 # Note from expermiment, same screen seems to the order of 2, while different around 60
     return distance(c1, colorFirstQuad) < delta and distance(c2, colorSecondQaud) < delta
 
 
@@ -276,6 +276,8 @@ def decodeImage(images, alphabetLength, coding, v_part, h_part):
     sortedQuadColorSequenceList = sortQuadrants(quadColorSequenceList, maskCase)
     print("MASKCASE",maskCase)
 
+    print(images)
+
     # We flatten the quad list into a color sequence
     colorSequence = flatten(sortedQuadColorSequenceList)
     
@@ -308,7 +310,7 @@ def decodeImage(images, alphabetLength, coding, v_part, h_part):
 
     # remove padding sequence at the end (black)
     codedMessage = letterSequence[:-padding]
-    print(codedMessage)
+    #print(codedMessage)
 
     # return decoded message
     return colors_to_text(codedMessage, n_tones, coding)
