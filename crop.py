@@ -91,7 +91,7 @@ def is_edge(color, quadrant, color_source):
 
     #HighLum
     threshQ1 = color_source[2]-40
-    threshQ2 = color_source[1]-25
+    threshQ2 = color_source[1]-30
     threshQ3 = color_source[0]-30
     threshQ4 = int(color_source[0])+int(color_source[1])-60
 

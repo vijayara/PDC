@@ -16,7 +16,7 @@ def testCrop(file_name, borders, num=0):
     for (top, bottom) in borders:
         draw.rectangle((top, bottom), fill="white")
 
-    source_img.save('starts/cropTest' + str(num) + '.png', "PNG")
+    source_img.save('mac_shots/cropTest' + str(num) + '.png', "PNG")
 
 def partitionTest(file_name, borders, num =0):
     img = Image.open(file_name)
@@ -35,17 +35,12 @@ def partitionTest(file_name, borders, num =0):
     source_img.save('partitionTest' + str(num) + '.png', "PNG")
 
 
-
-
-  
-
-
 # Images 
 
-file_path = 'starts/'
+file_path = 'mac_shots/'
 extension = '.png'
-start_seq = 22
-end_seq = 22
+start_seq = 1
+end_seq = 3
 images = []
 
 for index in range(start_seq, end_seq + 1):
