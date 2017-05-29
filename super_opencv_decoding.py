@@ -88,57 +88,58 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
         pil_im = Image.fromarray(cv2_im)
         PIL_images.append(pil_im)
+
+    try:
     
-#    # decode the images into a string
-#    decoded_text = decodeImage(PIL_images, N_COLORS, coding, rows, columns)
-#
-#    # save the decoded message in a file
-#    with open("output.txt", "w") as text_file:
-#        print(decoded_text, text_file)
-#    
-#    # print the decoded message in terminal
-#    print(decoded_text)
-#
-#    # Display the decoded message in the screen as soon as it is decoded
-#    text_to_display =  decoded_text.replace('\r', ' ').replace('\n', ' ')
-#    lines = textwrap.wrap(text_to_display, 100)
-#    display.fill((255, 255, 255))
-#    myfont = pygame.font.SysFont("ubuntu", 22, True)
-#    text_rect = pygame.Rect(50, 50, 50, 1200)
-#    while lines:
-#        line = lines[0]
-#        lines.pop(0)
-#
-#        label = myfont.render(line, 10, (41, 83, 80))
-#        display.blit(label, text_rect)
-#        text_rect.centery += 40
-#    pygame.display.flip()
-#
-#    # displays the message until we push on "q"
-#    while grand_final:
-#        for event in pygame.event.get():
-#            if (event.type == KEYDOWN and event.key == K_q):
-#                grand_final = 0
+        # decode the images into a string
+        decoded_text = decodeImage(PIL_images, N_COLORS, coding, rows, columns)
+    
+        # save the decoded message in a file
+        with open("output.txt", "w") as text_file:
+            print(decoded_text, text_file)
+        
+        # print the decoded message in terminal
+        print(decoded_text)
+    
+        # Display the decoded message in the screen as soon as it is decoded
+        text_to_display =  decoded_text.replace('\r', ' ').replace('\n', ' ')
+        lines = textwrap.wrap(text_to_display, 100)
+        display.fill((255, 255, 255))
+        myfont = pygame.font.SysFont("ubuntu", 22, True)
+        text_rect = pygame.Rect(50, 50, 50, 1200)
+        while lines:
+            line = lines[0]
+            lines.pop(0)
+    
+            label = myfont.render(line, 10, (41, 83, 80))
+            display.blit(label, text_rect)
+            text_rect.centery += 40
+        pygame.display.flip()
+    
+        # displays the message until we push on "q"
+        while grand_final:
+            for event in pygame.event.get():
+                if (event.type == KEYDOWN and event.key == K_q):
+                    grand_final = 0
 
     
+
+    except:
+
+
+
+
+        for x in range(1, len(PIL_images)): 
+            PIL_images[x].save(FILENAME + str(x) + ".png")
+            if (x < len(frames)-1):
+                print("Interval", str(x-1)+"-"+str(x)+": "+str(times[x]-times[x-1]))
+
+
     pygame.quit()
-
-
-   # output testing 
-
-
-    for x in range(1, len(PIL_images)): 
-        PIL_images[x].save(FILENAME + str(x) + ".png")
-        if (x < len(frames)-1):
-            print("Interval", str(x-1)+"-"+str(x)+": "+str(times[x]-times[x-1]))
-
-    # - - - - 
-
-
     
 config_safe = (110, 2, 10, 3, 5)
 config1 = (110, 2, 30, 4, 6)
-config_test = (35, 2, 30, 4, 6)
+config_test = (42, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_test)
