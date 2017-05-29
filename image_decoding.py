@@ -21,7 +21,7 @@ paddingSize = 2
 
 green_index = 2
 
-avgColorDelta = 1
+avgColorDelta = 2
 
 # If we have 4 samples of each image, and we want to take each third one:
 timingInterpolationStart = 1

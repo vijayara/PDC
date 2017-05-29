@@ -90,7 +90,6 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         PIL_images.append(pil_im)
 
     try:
-    
         # decode the images into a string
         decoded_text = decodeImage(PIL_images, N_COLORS, coding, rows, columns)
     
@@ -121,24 +120,17 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
             for event in pygame.event.get():
                 if (event.type == KEYDOWN and event.key == K_q):
                     grand_final = 0
-
-    
-
     except:
-
-
-
 
         for x in range(1, len(PIL_images)): 
             PIL_images[x].save(FILENAME + str(x) + ".png")
             if (x < len(frames)-1):
                 print("Interval", str(x-1)+"-"+str(x)+": "+str(times[x]-times[x-1]))
 
-
     pygame.quit()
     
 config_safe = (110, 2, 10, 3, 5)
-config1 = (110, 2, 30, 4, 6)
+config1 = (42, 2, 30, 4, 6)
 config_test = (42, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
