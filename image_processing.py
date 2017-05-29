@@ -34,10 +34,10 @@ def partitionTest(file_name, borders, num =0):
         itr = itr + 1
     source_img.save('partitionTest' + str(num) + '.png', "PNG")
 
-file_path = 'shot_test_mac/shots/pic'
+file_path = 'shots/pic'
 extension = '.png'
 start_seq = 1
-end_seq = 69
+end_seq = 74
 images = []
 
 for index in range(start_seq, end_seq + 1):

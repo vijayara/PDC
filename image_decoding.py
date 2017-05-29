@@ -24,8 +24,8 @@ green_index = 2
 avgColorDelta = 2
 
 # If we have 4 samples of each image, and we want to take each third one:
-timingInterpolationStart = 1
-timingInterpolationJump = 3
+timingInterpolationStart = 2
+timingInterpolationJump = 4
 
 # returns the letter with the closest euclidian distance to the detected color.
 def closestColor(detected_color, alphabet):
