@@ -130,8 +130,9 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     pygame.quit()
     
 config_safe = (110, 2, 10, 3, 5)
-config1 = (42, 2, 30, 4, 6)
-config_test = (42, 2, 30, 4, 6)
+config1 = (110, 2, 30, 4, 6)
+config2 = (42, 2, 30, 4, 6)
+config_test = (110, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_test)
