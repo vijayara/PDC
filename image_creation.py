@@ -209,13 +209,35 @@ Then one day the tribe that claimed to be the oldest, the first, came upon an oa
  colored birds sang sweetly in their boughs, and beasts lay quietly in their shade.
 And there in the middle flowed a deep spring of crystalline waters.
 When the sultan of the tribe beheld this jewel of the..."""
-text3000 = """She had shaped it into a cone. It smelled... marvelous. He stretched his chin out onto his forefeet and closed his eyes, savoring the memory. Miena didn't have a clue as to why mud would smell marvelous. That's.... nice. I have thought about it, too. Not mud, of course -- but having a family. But then... Dooro sensed Miena's depression. Knowing she was an outcast from her own kind and unlikely to attract a mate, it occurred to him a distraction was in order. Look, there's my mother with my brothers. Sure enough, the mother beaver was swimming across the lake in their direction with her two kits straddling her tail. After passing by a pair of ducks also giving rides to their ducklings, they came right up to Miena and Dooro. The beaver kits immediately abandoned their mother and began leaping onto Dooro and then tumbling over one another. Boys, behave yourselves, their mother admonished sternly. To Dooro she said, Your father and I are about to cut down a big spruce tree. Will you watch your baby brothers? Dooro's eyes twinkled. He'd already seen Miena fluff her feathers in anticipation. That will be fine, mother. Maybe I will give them another lesson on dam building. The mother beaver smiled her beaver smile and nodded serenely, fully trusting her oldest son. She didn't object to Miena. She'd decided it was an odd friendship, but after all, ducks are no threat to beavers. She returned to the water with a gentle slap of her tail and Dooro, Miena, and the kits all followed her as far as the dam. Once at the dam Dooro began explaining the fine art of dam building. He told them a dam needs to be wider at the bottom than the top. That instead of one big tree being used as a foundation, many saplings and limbs of older trees heavy with brush go into the construction. Then branches are laid side by side in line with the direction of the current and anchored into the mud by rocks and stones, so as not to wash away. With a web of interlaced branches acting like a net, all manner of driftwood and debris are entrapped. Dooro explained that once the foundation is laid, to be watertight the dam needs a plaster of mud, pebbles, and grasses and that this plastering of mud must be done on the upstream side first or it will wash away. And finally, the heaviest logs are added to the dam on the downstream side and pushed against it at right angles for more strength. Being only three weeks old, Dooro's brothers were hardly attentive. They perked up, however, at the mention of mud. We want to plaster. Can we do that? they begged. It was what Dooro had in mind. He took them to the bottom of the pond where he showed them how to scoop up armfuls of mud, old leaves and pebbles. His forepaws with their five toes and strong claws were particularly dexterous, and with the support of his paddle-like tail he could walk on his hind legs underwater. Arms full, Dooro actually walked up the side of the eight-foot dam to the surface where he began shoving mud into place with paws and snout."""
+text3000 = """She had shaped it into a cone. It smelled... marvelous. He stretched his chin out onto his forefeet and closed his eyes,
+ savoring the memory. Miena didn't have a clue as to why mud would smell marvelous. That's.... nice. I have thought about it, too. 
+Not mud, of course -- but having a family. But then... Dooro sensed Miena's depression. Knowing she was an outcast from her own kind and
+ unlikely to attract a mate, it occurred to him a distraction was in order. Look, there's my mother with my brothers. Sure enough,
+ the mother beaver was swimming across the lake in their direction with her two kits straddling her tail. After passing by a pair of
+ ducks also giving rides to their ducklings, they came right up to Miena and Dooro. The beaver kits immediately abandoned their mother
+ and began leaping onto Dooro and then tumbling over one another. Boys, behave yourselves, their mother admonished sternly. To Dooro 
+she said, Your father and I are about to cut down a big spruce tree. Will you watch your baby brothers? Dooro's eyes twinkled.
+ He'd already seen Miena fluff her feathers in anticipation. That will be fine, mother. Maybe I will give them another lesson on
+ dam building. The mother beaver smiled her beaver smile and nodded serenely, fully trusting her oldest son. She didn't object to Miena.
+ She'd decided it was an odd friendship, but after all, ducks are no threat to beavers. She returned to the water with a gentle slap of
+ her tail and Dooro, Miena, and the kits all followed her as far as the dam. Once at the dam Dooro began explaining the fine art of dam 
+building. He told them a dam needs to be wider at the bottom than the top. That instead of one big tree being used as a foundation, many
+ saplings and limbs of older trees heavy with brush go into the construction. Then branches are laid side by side in line with the
+ direction of the current and anchored into the mud by rocks and stones, so as not to wash away. With a web of interlaced branches
+ acting like a net, all manner of driftwood and debris are entrapped. Dooro explained that once the foundation is laid, to be watertight
+ the dam needs a plaster of mud, pebbles, and grasses and that this plastering of mud must be done on the upstream side first or it will
+ wash away. And finally, the heaviest logs are added to the dam on the downstream side and pushed against it at right angles for more
+ strength. Being only three weeks old, Dooro's brothers were hardly attentive. They perked up, however, at the mention of mud. We want
+ to plaster. Can we do that? they begged. It was what Dooro had in mind. He took them to the bottom of the pond where he showed them how
+ to scoop up armfuls of mud, old leaves and pebbles. His forepaws with their five toes and strong claws were particularly dexterous,
+ and with the support of his paddle-like tail he could walk on his hind legs underwater. Arms full, Dooro actually walked up the side
+ of the eight-foot dam to the surface where he began shoving mud into place with paws and snout."""
 text = "Il etait une foi un nain becile. Jadis ils etaient douze, ou treize... Enfin, quoique, ils etaient peut-etre plus. Tout commenca la-bas, sur les charbons de bois. Rene, fils de Bernard et de Zeus lui meme. Dans dix secondes on arrete et on se casse, 91283290183201938 fin. "
 
 config_safe = (text, 3, 5, 2, 330, 10)
 config1 = (text, 4, 6, 2, 126, 30)
 config2 = (text, 4, 6, 2, 126, 30)
-config_test = (text200, 4, 6, 2, 330, 30)
+config_test = (text200, 4, 6, 2, 4*42, 30)
 
 # def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
 display(*config_test)
