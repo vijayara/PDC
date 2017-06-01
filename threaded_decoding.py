@@ -16,9 +16,9 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     pygame.mouse.set_visible(False)
     
     RESOLUTION = (1280, 720)
-    USABLE_SIZE = (RESOLUTION[0]//3, RESOLUTION[1]//3)
+    USABLE_SIZE = (RESOLUTION[0]//5, RESOLUTION[1]//5)
     USABLE_RECT = USABLE_SIZE*2
-    CROP = (USABLE_SIZE[1], 2*USABLE_SIZE[1], USABLE_SIZE[0], 2*USABLE_SIZE[0])
+    CROP = (2*USABLE_SIZE[1], 3*USABLE_SIZE[1], 2*USABLE_SIZE[0], 3*USABLE_SIZE[0])
 
     cam = WebcamVideoStream(src=0, width=RESOLUTION[0], height=RESOLUTION[1]).start()
     bad_images = 340//capture_interval
@@ -38,7 +38,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         PIL_image = Image.fromarray(cv2_im)
         string_image = PIL_image.tobytes('raw', "RGB")
         pygame_image = pygame.image.fromstring(string_image, USABLE_SIZE, "RGB")
-        display.blit(pygame_image, USABLE_SIZE)
+        display.blit(pygame_image, (2*USABLE_SIZE[0], 2*USABLE_SIZE[1]))
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -65,6 +65,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
 
         if loop_time < previous_time:
             image = cam.read()
+            image = image[CROP[0]:CROP[1],CROP[2]:CROP[3]]
             images.append(image)
             times.append(time)
         previous_time = loop_time
@@ -78,7 +79,6 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     PIL_images = []
     for image in images[bad_images:]:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = image[CROP[0]:CROP[1],CROP[2]:CROP[3]]
         PIL_image = Image.fromarray(image, 'RGB')
         PIL_images.append(PIL_image)
     
@@ -121,7 +121,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     
 config_safe = (110, 2, 30, 3, 5)
 config_speed = (40, 2, 30, 4, 6)
-config_test = (40, 2, 30, 4, 6)
+config_test = (40, 2, 30, 3, 5)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_speed)

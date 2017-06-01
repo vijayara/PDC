@@ -7,12 +7,13 @@ idealRatio = 1280 / 720
 
 emptyQuad = (-1, -1)
 
+# Dark room with lights
 #threshQ1 = np.array([50, 150, 230]) # Blue
 #threshQ2 = np.array([100, 180, 140]) # Green
 #threshQ3 = np.array([170, 50, 40]) # Red 
 #threshQ4 = np.array([155, 175, 120]) # Yellow
 
-#HighLum
+# HighLum
 threshQ1 = np.array([65, 150, 230]) # Blue
 threshQ2 = np.array([100, 200, 140]) # Green
 threshQ3 = np.array([190, 50, 40]) # Red 
@@ -49,7 +50,7 @@ def isQ4(color):
 # Note that testing is needed to find good thresholds that gaurantee that we
 # our color positions are indeed the subscreens.
 def get_color_positions(arr, dim):
-
+    jump = 5
     locQ1, locQ2, locQ3, locQ4 = emptyQuad, emptyQuad, emptyQuad, emptyQuad
 
     foundQ1, foundQ2, foundQ3, foundQ4 = False, False, False, False
@@ -61,26 +62,26 @@ def get_color_positions(arr, dim):
         for j in range(dim[1]):
 
             if (not foundQ1) and isQ1(arr[i][j]):
-                locQ1 = (i, j)
-                colorQ1 = arr[i][j]
+                locQ1 = (i+jump, j)
+                colorQ1 = arr[i+jump][j]
                 foundQ1 = True
                 nbrCornersFound+=1
 
             elif (not foundQ2) and isQ2(arr[i][j]):
-                locQ2 = (i, j)
-                colorQ2 = arr[i][j]
+                locQ2 = (i+jump, j)
+                colorQ2 = arr[i+jump][j]
                 foundQ2 = True
                 nbrCornersFound+=1
             
             elif ((not foundQ3) and isQ3(arr[i][j])):
-                locQ3 = (i, j)
-                colorQ3 = arr[i][j]
+                locQ3 = (i+jump, j)
+                colorQ3 = arr[i+jump][j]
                 foundQ3 = True
                 nbrCornersFound+=1
 
             elif ((not foundQ4) and isQ4(arr[i][j])):
-                locQ4 = (i, j)
-                colorQ4 = arr[i][j]
+                locQ4 = (i+jump, j)
+                colorQ4 = arr[i+jump][j]
                 foundQ4 = True
                 nbrCornersFound+=1
 
