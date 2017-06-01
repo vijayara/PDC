@@ -4,7 +4,7 @@
 from tools import *
 import pygame
 from pygame.locals import *
-    
+
 def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
     pygame.init()
     pygame.mouse.set_visible(False)
@@ -234,10 +234,9 @@ building. He told them a dam needs to be wider at the bottom than the top. That 
  of the eight-foot dam to the surface where he began shoving mud into place with paws and snout."""
 text = "Il etait une foi un nain becile. Jadis ils etaient douze, ou treize... Enfin, quoique, ils etaient peut-etre plus. Tout commenca la-bas, sur les charbons de bois. Rene, fils de Bernard et de Zeus lui meme. Dans dix secondes on arrete et on se casse, 91283290183201938 fin. "
 
-config_safe = (text, 3, 5, 2, 330, 10)
-config1 = (text, 4, 6, 2, 126, 30)
-config2 = (text, 4, 6, 2, 126, 30)
+config_safe = (text, 3, 5, 2, 3*110, 30)
+config_speed = (text, 4, 6, 2, 3*40, 30)
 config_test = (text200, 4, 6, 2, 4*42, 30)
 
 # def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
-display(*config_test)
+display(*config_speed)
