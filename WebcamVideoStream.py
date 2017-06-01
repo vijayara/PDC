@@ -6,10 +6,14 @@ import cv2
 # http://www.pyimagesearch.com/2015/12/21/increasing-webcam-fps-with-python-and-opencv/
  
 class WebcamVideoStream:
-	def __init__(self, src=0):
+	def __init__(self, src=0, width=0, height=0):
 		# initialize the video camera stream and read the first frame
 		# from the stream
 		self.stream = cv2.VideoCapture(src)
+		if(width):
+			self.stream.set(3, width)
+		if(height):
+			self.stream.set(4, height)
 		(self.grabbed, self.frame) = self.stream.read()
  
 		# initialize the variable used to indicate if the thread should
@@ -17,11 +21,11 @@ class WebcamVideoStream:
 		self.stopped = False
 
 
-        def start(self):
-        # start the thread to read frames from the video stream
-            Thread(target=self.update, args=()).start()
-            return self
- 
+	def start(self):
+	# start the thread to read frames from the video stream
+		Thread(target=self.update, args=()).start()
+		return self
+
 	def update(self):
 		# keep looping infinitely until the thread is stopped
 		while True:
