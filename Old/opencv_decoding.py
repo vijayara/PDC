@@ -1,14 +1,10 @@
-from WebcamVideoStream import *
 from PIL import Image
 import textwrap
 from image_decoding import *
 import pygame, sys
 from pygame.locals import *
-import time
 import cv2
 
-# get the current time in millisecont
-current_time = lambda: int(round(time.time() * 1000))
 
 def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     N_COLORS = n_tons**3
@@ -20,7 +16,10 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     USABLE_RECT = USABLE_SIZE*2
     CROP = (USABLE_SIZE[1], 2*USABLE_SIZE[1], USABLE_SIZE[0], 2*USABLE_SIZE[0])
 
-    cam = WebcamVideoStream(src=0, width=RESOLUTION[0], height=RESOLUTION[1]).start()
+    cap = cv2.VideoCapture(0)
+    # 3 and 4 are the constants to access camera width and height
+    cap.set(3, RESOLUTION[0])
+    cap.set(4, RESOLUTION[1])
     bad_images = 340//capture_interval
         
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -32,7 +31,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
 
     while preparation:
         # Display preview to aim screen
-        cv2_im = cam.read()
+        _,cv2_im = cap.read()
         cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
         cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
         PIL_image = Image.fromarray(cv2_im)
@@ -51,35 +50,28 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
             if event.type == KEYDOWN and event.key == K_q:
                 preparation = 0
                 run = 0
-                cam.stop()
                 pygame.quit()
+                cap.release() # stops opencv camera
 
     images = []
     times = []
-
-    previous_time = 0
-
     while run:
-        time = current_time()
-        loop_time = time % capture_interval
-
-        if loop_time < previous_time:
-            image = cam.read()
-            images.append(image)
-            times.append(time)
-        previous_time = loop_time
-
         for event in pygame.event.get():
+            if event.type == USEREVENT:
+                _,cv2_im = cap.read()
+                cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
+                cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
+
+                images.append(cv2_im)
+                times.append(pygame.time.get_ticks())
             if (event.type == KEYDOWN):
                 run = 0
-                cam.stop()
+                cap.release() # stops opencv camera
 
     # add every image into a PIL list
     PIL_images = []
-    for image in images[bad_images:]:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = image[CROP[0]:CROP[1],CROP[2]:CROP[3]]
-        PIL_image = Image.fromarray(image, 'RGB')
+    for i in range(bad_images, len(images)):
+        PIL_image = Image.fromarray(images[i])
         PIL_images.append(PIL_image)
     
     try:
@@ -88,24 +80,24 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
 
         # save the decoded message in a file
         with open("output.txt", "w") as text_file:
-            print(decoded_text, file=text_file)
+            print(decoded_text, text_file)
     
         # print the decoded message in terminal
         print(decoded_text)
 
         # Display the decoded message in the screen as soon as it is decoded
         text_to_display =  decoded_text.replace('\r', ' ').replace('\n', ' ')
-        lines = textwrap.wrap(text_to_display, 120)
+        lines = textwrap.wrap(text_to_display, 100)
         display.fill((255, 255, 255))
         myfont = pygame.font.SysFont("ubuntu", 22, True)
-        text_rect = pygame.Rect(40, 40, 40, 1200)
+        text_rect = pygame.Rect(50, 50, 50, 1200)
         while lines:
             line = lines[0]
             lines.pop(0)
 
             label = myfont.render(line, 10, (41, 83, 80))
             display.blit(label, text_rect)
-            text_rect.centery += 30
+            text_rect.centery += 40
         pygame.display.flip()
 
         # displays the message until we push on "q"
@@ -122,9 +114,9 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         print("Error:", e)
     pygame.quit()
     
-config_safe = (110, 2, 30, 3, 5)
-config_speed = (40, 2, 30, 4, 6)
-config_test = (40, 2, 30, 4, 6)
+config_safe = (110, 2, 10, 3, 5)
+config1 = (110, 2, 30, 4, 6)
+config_test = (50, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_test)

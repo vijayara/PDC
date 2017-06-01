@@ -1,4 +1,5 @@
-from WebcamVideoStream import *
+from __future__ import print_function
+from imutils.video import WebcamVideoStream
 from PIL import Image
 import textwrap
 from image_decoding import *
@@ -7,8 +8,8 @@ from pygame.locals import *
 import time
 import cv2
 
-# get the current time in millisecont
-current_time = lambda: int(round(time.time() * 1000))
+
+current_milli_time = lambda: int(round(time.time() * 1000))
 
 def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     N_COLORS = n_tons**3
@@ -19,10 +20,13 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     USABLE_SIZE = (RESOLUTION[0]//3, RESOLUTION[1]//3)
     USABLE_RECT = USABLE_SIZE*2
     CROP = (USABLE_SIZE[1], 2*USABLE_SIZE[1], USABLE_SIZE[0], 2*USABLE_SIZE[0])
-
-    cam = WebcamVideoStream(src=0, width=RESOLUTION[0], height=RESOLUTION[1]).start()
+    
+    cap = cv2.VideoCapture(0)
+    # 3 and 4 are the constants to access camera width and height
+    cap.set(3, RESOLUTION[0])
+    cap.set(4, RESOLUTION[1])
     bad_images = 340//capture_interval
-        
+ 
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     FILENAME = 'shots/pic'
     
@@ -30,101 +34,113 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     run = 1
     grand_final = 1
 
+
     while preparation:
         # Display preview to aim screen
-        cv2_im = cam.read()
+        _,cv2_im = cap.read()
         cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
         cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
         PIL_image = Image.fromarray(cv2_im)
-        string_image = PIL_image.tobytes('raw', "RGB")
-        pygame_image = pygame.image.fromstring(string_image, USABLE_SIZE, "RGB")
+        string_image = PIL_image.tobytes("raw", "RGB")
+        pygame_image = pygame.image.fromstring(string_image, USABLE_SIZE, "RGB", False)
         display.blit(pygame_image, USABLE_SIZE)
         pygame.display.flip()
 
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_s:
                 pygame.time.delay(1000)# you have 1 sec to remove hands of canal
-                pygame.time.set_timer(USEREVENT, capture_interval)
+                #pygame.time.set_timer(USEREVENT, capture_interval)
                 preparation = 0
                 display.fill((0,0,0))
                 pygame.display.flip()
             if event.type == KEYDOWN and event.key == K_q:
                 preparation = 0
                 run = 0
-                cam.stop()
                 pygame.quit()
 
-    images = []
+    # quit non threaded camera
+    cap.release()
+
+    # Add threaded camera
+    vs = WebcamVideoStream(src=0).start()
+    previous_time = 0
+    frames = []
+
+    #for test
     times = []
 
-    previous_time = 0
-
     while run:
-        time = current_time()
-        loop_time = time % capture_interval
+        current_time = current_milli_time()
+        loop_time = current_time % capture_interval
 
         if loop_time < previous_time:
-            image = cam.read()
-            images.append(image)
-            times.append(time)
+            frame = vs.read()
+            frames.append(frame)
+            # for interval test
+            times.append(current_time)
         previous_time = loop_time
 
         for event in pygame.event.get():
             if (event.type == KEYDOWN):
                 run = 0
-                cam.stop()
+                # stop cv2 camera if possible
 
-    # add every image into a PIL list
+    # transform frame into PIL format, skipping the first one
+    # for quality reason
     PIL_images = []
-    for image in images[bad_images:]:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = image[CROP[0]:CROP[1],CROP[2]:CROP[3]]
-        PIL_image = Image.fromarray(image, 'RGB')
-        PIL_images.append(PIL_image)
-    
+    for frame in frames[bad_images:]:
+        cv2_im = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
+        pil_im = Image.fromarray(cv2_im)
+        PIL_images.append(pil_im)
+
     try:
         # decode the images into a string
         decoded_text = decodeImage(PIL_images, N_COLORS, coding, rows, columns)
-
+    
         # save the decoded message in a file
         with open("output.txt", "w") as text_file:
-            print(decoded_text, file=text_file)
-    
+            print(decoded_text, text_file)
+        
         # print the decoded message in terminal
         print(decoded_text)
-
+    
         # Display the decoded message in the screen as soon as it is decoded
         text_to_display =  decoded_text.replace('\r', ' ').replace('\n', ' ')
-        lines = textwrap.wrap(text_to_display, 120)
+        lines = textwrap.wrap(text_to_display, 100)
         display.fill((255, 255, 255))
         myfont = pygame.font.SysFont("ubuntu", 22, True)
-        text_rect = pygame.Rect(40, 40, 40, 1200)
+        text_rect = pygame.Rect(50, 50, 50, 1200)
         while lines:
             line = lines[0]
             lines.pop(0)
-
+    
             label = myfont.render(line, 10, (41, 83, 80))
             display.blit(label, text_rect)
-            text_rect.centery += 30
+            text_rect.centery += 40
         pygame.display.flip()
-
+    
         # displays the message until we push on "q"
         while grand_final:
             for event in pygame.event.get():
                 if (event.type == KEYDOWN and event.key == K_q):
                     grand_final = 0
 
+
     except Exception as e:
-        for i in range(len(PIL_images)):
-            PIL_images[i].save(FILENAME+str(i+1)+'.png')
-            if(i != 0):
-                print("Interval", str(i-1)+"-"+str(i)+": "+str(times[i]-times[i-1]))
-        print("Error:", e)
+
+        for x in range(1, len(PIL_images)): 
+            PIL_images[x].save(FILENAME + str(x) + ".png")
+            if (x < len(frames)-1):
+                print("Interval", str(x-1)+"-"+str(x)+": "+str(times[x]-times[x-1]))
+
+        print(e)
     pygame.quit()
     
-config_safe = (110, 2, 30, 3, 5)
-config_speed = (40, 2, 30, 4, 6)
-config_test = (40, 2, 30, 4, 6)
+config_safe = (110, 2, 10, 3, 5)
+config1 = (110, 2, 30, 4, 6)
+config2 = (42, 2, 30, 4, 6)
+config_test = (42, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_test)
