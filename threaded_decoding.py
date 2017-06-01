@@ -20,10 +20,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     USABLE_RECT = USABLE_SIZE*2
     CROP = (USABLE_SIZE[1], 2*USABLE_SIZE[1], USABLE_SIZE[0], 2*USABLE_SIZE[0])
 
-    cap = cv2.VideoCapture(0)
-    # 3 and 4 are the constants to access camera width and height
-    cap.set(3, RESOLUTION[0])
-    cap.set(4, RESOLUTION[1])
+    cam = WebcamVideoStream(src=0, width=RESOLUTION[0], height=RESOLUTION[1]).start()
     bad_images = 340//capture_interval
         
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -35,7 +32,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
 
     while preparation:
         # Display preview to aim screen
-        _,cv2_im = cap.read()
+        cv2_im = cam.read()
         cv2_im = cv2.cvtColor(cv2_im,cv2.COLOR_BGR2RGB)
         cv2_im = cv2_im[CROP[0]:CROP[1],CROP[2]:CROP[3]]
         PIL_image = Image.fromarray(cv2_im)
@@ -54,12 +51,8 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
             if event.type == KEYDOWN and event.key == K_q:
                 preparation = 0
                 run = 0
+                cam.stop()
                 pygame.quit()
-    
-    # stops opencv camera
-    cap.release()
-    # Add threaded camera
-    threaded_cam = WebcamVideoStream(src=0, width=RESOLUTION[0], height=RESOLUTION[1]).start()
 
     images = []
     times = []
@@ -71,8 +64,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         loop_time = time % capture_interval
 
         if loop_time < previous_time:
-            image = threaded_cam.read()
-            image = image[CROP[0]:CROP[1],CROP[2]:CROP[3]]
+            image = cam.read()
             images.append(image)
             times.append(time)
         previous_time = loop_time
@@ -80,12 +72,14 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         for event in pygame.event.get():
             if (event.type == KEYDOWN):
                 run = 0
-                threaded_cam.stop()
+                cam.stop()
 
     # add every image into a PIL list
     PIL_images = []
-    for i in range(bad_images, len(images)):
-        PIL_image = Image.fromarray(images[i])
+    for image in images[bad_images:]:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = image[CROP[0]:CROP[1],CROP[2]:CROP[3]]
+        PIL_image = Image.fromarray(image, 'RGB')
         PIL_images.append(PIL_image)
     
     try:
@@ -104,14 +98,14 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         lines = textwrap.wrap(text_to_display, 100)
         display.fill((255, 255, 255))
         myfont = pygame.font.SysFont("ubuntu", 22, True)
-        text_rect = pygame.Rect(50, 50, 50, 1200)
+        text_rect = pygame.Rect(50, 50, 50, 1500)
         while lines:
             line = lines[0]
             lines.pop(0)
 
             label = myfont.render(line, 10, (41, 83, 80))
             display.blit(label, text_rect)
-            text_rect.centery += 40
+            text_rect.centery += 30
         pygame.display.flip()
 
         # displays the message until we push on "q"
@@ -130,7 +124,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     
 config_safe = (110, 2, 10, 3, 5)
 config1 = (110, 2, 30, 4, 6)
-config_test = (110, 2, 30, 4, 6)
+config_test = (40, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_test)

@@ -13,16 +13,20 @@ current_milli_time = lambda: int(round(time.time() * 1000))
 
 def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     N_COLORS = n_tons**3
-    bad_images = 340//capture_interval
     pygame.init()
     pygame.mouse.set_visible(False)
-    cap = cv2.VideoCapture(0)
     
     RESOLUTION = (1280, 720)
     USABLE_SIZE = (RESOLUTION[0]//3, RESOLUTION[1]//3)
     USABLE_RECT = USABLE_SIZE*2
     CROP = (USABLE_SIZE[1], 2*USABLE_SIZE[1], USABLE_SIZE[0], 2*USABLE_SIZE[0])
-        
+       
+    cap = cv2.VideoCapture(0)
+    # 3 and 4 are the constants to access camera width and height
+    cap.set(3, RESOLUTION[0])
+    cap.set(4, RESOLUTION[1])
+    bad_images = 340//capture_interval
+ 
     display = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     FILENAME = 'shots/pic'
     
@@ -140,4 +144,3 @@ config_test = (42, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_test)
-

@@ -24,8 +24,8 @@ green_index = 2
 avgColorDelta = 2
 
 # If we have 4 samples of each image, and we want to take each third one:
-timingInterpolationStart = 2
-timingInterpolationJump = 4
+timingInterpolationStart = 1
+timingInterpolationJump = 3
 
 # returns the letter with the closest euclidian distance to the detected color.
 def closestColor(detected_color, alphabet):
@@ -164,7 +164,7 @@ def getQuadrants(border,image):
 # returns true if the colors passed (c1, and c2) correspon to the 
 # starting screen colors 
 def isSameScreen(c1, c2, colorFirstQuad, colorSecondQaud):
-    delta = 20 # Note from expermiment, same screen seems to the order of 2, while different around 60
+    delta = 50 # From expriment, a true transition distance ~= 140
     return distance(c1, colorFirstQuad) < delta and distance(c2, colorSecondQaud) < delta
 
 

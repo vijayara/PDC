@@ -37,7 +37,7 @@ def partitionTest(file_name, borders, num =0):
 file_path = 'shots/pic'
 extension = '.png'
 start_seq = 1
-end_seq = 74
+end_seq = 462
 images = []
 
 for index in range(start_seq, end_seq + 1):
