@@ -89,23 +89,20 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
         # save the decoded message in a file
         with open("output.txt", "w") as text_file:
             print(decoded_text, file=text_file)
-    
-        # print the decoded message in terminal
-        print(decoded_text)
 
         # Display the decoded message in the screen as soon as it is decoded
         text_to_display =  decoded_text.replace('\r', ' ').replace('\n', ' ')
         lines = textwrap.wrap(text_to_display, 120)
         display.fill((255, 255, 255))
-        myfont = pygame.font.SysFont("ubuntu", 22, True)
-        text_rect = pygame.Rect(40, 40, 40, 1200)
+        myfont = pygame.font.SysFont("ubuntu", 20, True)
+        text_rect = pygame.Rect(35, 35, 35, 1200)
         while lines:
             line = lines[0]
             lines.pop(0)
 
             label = myfont.render(line, 10, (41, 83, 80))
             display.blit(label, text_rect)
-            text_rect.centery += 30
+            text_rect.centery += 25
         pygame.display.flip()
 
         # displays the message until we push on "q"
@@ -127,4 +124,4 @@ config_speed = (40, 2, 30, 4, 6)
 config_test = (40, 2, 30, 4, 6)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
-take_shots(*config_test)
+take_shots(*config_speed)
