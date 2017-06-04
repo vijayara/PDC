@@ -2,7 +2,6 @@
 # Authors: Thierry B., Niroshan V., Ignacio A.
 
 from tools import *
-from test_text import *
 import pygame
 from pygame.locals import *
 
@@ -196,9 +195,9 @@ def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, c
 with open('text.txt', 'r') as myfile:
     text = myfile.read()
 
-config_safe = (text200, 3, 5, 2, 3*110, 30)
+config_safe = (text, 3, 5, 2, 3*110, 30)
 config_speed = (text, 4, 6, 2, 3*40, 30)
-config_test = (text200, 4, 6, 2, 4*42, 30)
+config_test = (text, 4, 6, 2, 4*42, 30)
 
 # def display(text, rows=4, columns=6, n_tons=2, refresh_interval=110, coding=0, cross_size=30):
 display(*config_speed)

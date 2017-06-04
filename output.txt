@@ -1,22 +1,5 @@
-helloWorld = 'Hello, world !'
-text200 = """In the midst of the Great Desert lived two tribes of people.
-Both were nomadic in nature and continuously traveled across the arid landscape,
-from oasis to oasis. Although each tribe considered themselves..."""
-text1000 = """In the midst of the Great Desert lived two tribes of people.
-Both were nomadic in nature and continuously traveled across the arid landscape,
-from oasis to oasis. Although each tribe considered themselves nomads, it was in 
-truth not by choice. For you see, each oasis was very fragile because the waters 
-in each were limited. Thus, instead of living at an oasis until it ran dry, thus 
-destroying it as a place of shelter for the future, in their wisdom they would move on.
-Yet, it was forever the quest of each tribe to find an oasis that could sustain them 
-over many years, without the threat that the waters would run dry.
-Then one day the tribe that claimed to be the oldest, the first, came upon an oasis
- large enough to hold a thousand tribes, full of tall fruit-bearing trees, where 
- colored birds sang sweetly in their boughs, and beasts lay quietly in their shade.
-And there in the middle flowed a deep spring of crystalline waters.
-When the sultan of the tribe beheld this jewel of the..."""
-text3000 = """She had shaped it into a cone. It smelled... marvelous. He stretched his chin out onto his forefeet and closed his eyes,
- savoring the memory. Miena didn't have a clue as to why mud would smell marvelous. That's.... nice. I have thought about it, too. 
+She had shaped it into a cone. It smelled... marvelous. He stretched his chin out onto his forefeet and closed his eyes,
+ savoring the memory. Shannon didn't have a clue as to why mud would smell marvelous. That's.... nice. I have thought about it, too. 
 Not mud, of course -- but having a family. But then... Dooro sensed Miena's depression. Knowing she was an outcast from her own kind and
  unlikely to attract a mate, it occurred to him a distraction was in order. Look, there's my mother with my brothers. Sure enough,
  the mother beaver was swimming across the lake in their direction with her two kits straddling her tail. After passing by a pair of
@@ -37,4 +20,4 @@ building. He told them a dam needs to be wider at the bottom than the top. That 
  to plaster. Can we do that? they begged. It was what Dooro had in mind. He took them to the bottom of the pond where he showed them how
  to scoop up armfuls of mud, old leaves and pebbles. His forepaws with their five toes and strong claws were particularly dexterous,
  and with the support of his paddle-like tail he could walk on his hind legs underwater. Arms full, Dooro actually walked up the side
- of the eight-foot dam to the surface where he began shoving mud into place with paws and snout."""
+ of the eight-foot dam to the surface where he began shoving mud into place with paws and snout.

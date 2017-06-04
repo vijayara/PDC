@@ -121,7 +121,7 @@ def take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5):
     
 config_safe = (110, 2, 30, 3, 5)
 config_speed = (40, 2, 30, 4, 6)
-config_test = (40, 2, 30, 3, 5)
+config_test = (40, 2, 30, 5, 8)
 
 # take_shots(capture_interval=110, n_tons=2, coding=0, rows=3, columns=5)      
 take_shots(*config_speed)

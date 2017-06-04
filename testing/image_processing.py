@@ -34,22 +34,31 @@ def partitionTest(file_name, borders, num =0):
         itr = itr + 1
     source_img.save('partitionTest' + str(num) + '.png', "PNG")
 
-
-# Images 
-
-file_path = 'starts/'
+file_path = 'shots/pic'
 extension = '.png'
-start_seq = 23
-end_seq = 23
+start_seq = 1
+end_seq = 104
 images = []
 
 for index in range(start_seq, end_seq + 1):
     filename = file_path + str(index) + extension
 
     images.append(file_path + str(index) + extension)
+ 
+
+
+
+coding = 30
+v_part = 4
+h_part = 6
+
+decodedMesage = decodeImage(images, alphabetLength, coding, v_part, h_part)
+print(decodedMesage)
 
 
 # # # Crop and Partition Tests
+
+images = []
 
 itr = 1
 for testFile in images:
@@ -63,6 +72,5 @@ for testFile in images:
 	#
 	testCrop(testFile, borders, itr)
 	itr+=1
-#partitionTest(images[0], borders, 1)
 
 
